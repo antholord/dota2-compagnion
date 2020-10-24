@@ -1,3 +1,5 @@
+import { TimedEventEnumeration } from "../enumeration/timed-event-enumeration";
+
 export class TimedEventModel {
   private _recurring: boolean;
   private _event: TimedEventEnumeration;

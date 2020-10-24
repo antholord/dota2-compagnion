@@ -5,6 +5,7 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { GameStateModel } from "@/server/model/game-state-model";
 import { GameServerService } from "./service/game-server-service";
 import { TimedEventModel } from "@/server/model/timed-event-model";
+import { TimedEventEnumeration } from "./enumeration/timed-event-enumeration";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -115,7 +116,6 @@ export function createHttpServer() {
         console.log("Event occurred " + event);
       };
       GameServerService.getInstance().registerEvent(new TimedEventModel(true, TimedEventEnumeration.BountyRune), eventCallback);
-
     });
   });
   server.listen(4000);
