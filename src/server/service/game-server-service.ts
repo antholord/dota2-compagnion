@@ -1,10 +1,11 @@
-import { GameStateModel } from "@/server/model/game-state-model";
-import { TimedEventModel } from "@/server/model/timed-event-model";
+import {GameStateModel} from "@/server/model/game-state-model";
+import {TimedEventModel} from "@/server/model/timed-event-model";
+import {EventTypeEnumeration} from "@/server/enumeration/event-type-enumeration";
 
 interface RegisteredEvent {
   event: TimedEventModel;
   dueTime: number;
-  callbackFunction: (anEvent: TimedEventModel) => any;
+  callbackFunction: (event: TimedEventModel, eventType: EventTypeEnumeration) => any;
 }
 
 export class GameServerService {
@@ -23,8 +24,10 @@ export class GameServerService {
         }
         // trigger event when its registered and keep the index for removal
         if (this._time >= registeredEvent.dueTime) {
-          registeredEvent.callbackFunction(registeredEvent.event);
+          registeredEvent.callbackFunction(registeredEvent.event, EventTypeEnumeration.Expired);
           return index;
+        } else if (this._time < registeredEvent.dueTime && this._time === registeredEvent.dueTime - registeredEvent.event.notificationLength) {
+          registeredEvent.callbackFunction(registeredEvent.event, EventTypeEnumeration.Notification);
         }
       }).filter((value) => value !== undefined)
         // remove all events that occurred
@@ -58,7 +61,7 @@ export class GameServerService {
     }
   }
 
-  public registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel) => any) {
+  public registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel, eventType: EventTypeEnumeration) => any) {
     const eventTime = this._time + event.length;
     console.log(`Registering ${event.name} occurring at ${eventTime}`);
     this._eventList.push({ event: event, dueTime: eventTime, callbackFunction: callback });

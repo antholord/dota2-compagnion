@@ -1,11 +1,11 @@
 "use strict";
-import { app, protocol, BrowserWindow } from "electron";
-import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
-import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-import { GameStateModel } from "@/server/model/game-state-model";
-import { GameServerService } from "./service/game-server-service";
+import {app, BrowserWindow, protocol} from "electron";
+import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
+import installExtension, {VUEJS_DEVTOOLS} from "electron-devtools-installer";
+import {GameStateModel} from "@/server/model/game-state-model";
+import {GameServerService} from "./service/game-server-service";
 import {TimedEventModel, timedEvents} from "@/server/model/timed-event-model";
-import { TimedEventEnumeration } from "./enumeration/timed-event-enumeration";
+import {EventTypeEnumeration} from "@/server/enumeration/event-type-enumeration";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -78,10 +78,17 @@ app.on("ready", async() => {
   createWindow();
   createHttpServer();
 
-  const eventCallback = (event: TimedEventModel): void => {
-    console.log("Event occurred " + event.name);
-    if (event.recurring) {
-      GameServerService.getInstance().registerEvent(event, eventCallback);
+  const eventCallback = (event: TimedEventModel, eventType: EventTypeEnumeration): void => {
+    switch (+eventType) {
+      case EventTypeEnumeration.Notification:
+        console.log(`Event notification '${event.name}' will occur in ${event.notificationLength}`);
+        break;
+      case EventTypeEnumeration.Expired:
+        console.log(`Event occurred '${event.name}'`);
+        if (event.recurring) {
+          GameServerService.getInstance().registerEvent(event, eventCallback);
+        }
+        break;
     }
   };
   GameServerService.getInstance().registerEvent(timedEvents.bounty, eventCallback);

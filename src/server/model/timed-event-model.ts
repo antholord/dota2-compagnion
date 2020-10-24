@@ -1,5 +1,3 @@
-import { TimedEventEnumeration } from "../enumeration/timed-event-enumeration";
-
 export class TimedEventModel {
   private _recurring: boolean;
   private _length: number;
@@ -48,5 +46,5 @@ export class TimedEventModel {
 
 export const timedEvents = Object.freeze({
   bounty: new TimedEventModel(true, 20, 10, "Bounty Runes"),
-  shrine: new TimedEventModel(true, 50, 40, "Shrines exp event")
+  shrine: new TimedEventModel(true, 50, 10, "Shrines exp event")
 });
