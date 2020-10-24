@@ -1,7 +1,8 @@
 module.exports = {
   pages: {
     app: {
-      entry: "./src/renderer/main.ts"
+      entry: "./src/renderer/main.ts",
+      index: "./src/renderer/public/index.html"
     }
   },
   pluginOptions: {
