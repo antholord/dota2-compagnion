@@ -17,14 +17,17 @@ export class GameServerService {
     setInterval(() => {
       this._time++;
       this._eventList.map((registeredEvent, index) => {
+        // TODO temporary log to see all temporary actions
         if (this._time % 10 === 0) {
-          console.log(registeredEvent.event.name + " still waiting for " + registeredEvent.dueTime);
+          console.log(`${registeredEvent.event.name} still waiting for ${registeredEvent.dueTime}`);
         }
+        // trigger event when its registered and keep the index for removal
         if (this._time >= registeredEvent.dueTime) {
           registeredEvent.callbackFunction(registeredEvent.event);
           return index;
         }
       }).filter((value) => value !== undefined)
+        // remove all events that occurred
         .forEach(index => {
           // @ts-ignore
           this._eventList.splice(index, 1);
@@ -42,11 +45,12 @@ export class GameServerService {
 
   public updateAssets(gameState: GameStateModel) {
     const gameTime: number = gameState.map.game_time;
+    // if the game server time and the in game time is different, we have to adjust the game server time.
     if (gameTime != null && this._time !== gameTime) {
-      console.log("Updating time from " + this._time + " to " + gameTime);
+      console.log(`Game time correction from ${this._time} to ${gameTime}`);
       this._eventList = this._eventList.map(registeredEvent => {
-        const difference: number = (gameTime - this._time);
-        console.log("Changing time from " + registeredEvent.dueTime + " + " + difference);
+        const timeDifference: number = (gameTime - this._time);
+        console.log(`Event '${registeredEvent.event.name}' time correction from ${registeredEvent.dueTime} adding ${timeDifference}`);
         return { event: registeredEvent.event, dueTime: registeredEvent.dueTime, callbackFunction: registeredEvent.callbackFunction };
       });
 
@@ -55,7 +59,8 @@ export class GameServerService {
   }
 
   public registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel) => any) {
-    console.log("Registering " + event.name);
-    this._eventList.push({ event: event, dueTime: this._time + event.length, callbackFunction: callback });
+    const eventTime = this._time + event.length;
+    console.log(`Registering ${event.name} occurring at ${eventTime}`);
+    this._eventList.push({ event: event, dueTime: eventTime, callbackFunction: callback });
   }
 }
