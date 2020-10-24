@@ -79,16 +79,13 @@ app.on("ready", async() => {
   createHttpServer();
 
   const eventCallback = (event: TimedEventModel, eventType: EventTypeEnumeration): void => {
-    switch (+eventType) {
-      case EventTypeEnumeration.Notification:
-        console.log(`Event notification '${event.name}' will occur in ${event.notificationLength}`);
-        break;
-      case EventTypeEnumeration.Expired:
-        console.log(`Event occurred '${event.name}'`);
-        if (event.recurring) {
-          GameServerService.getInstance().registerEvent(event, eventCallback);
-        }
-        break;
+    if (eventType === EventTypeEnumeration.Notification) {
+      console.log(`Event notification '${event.name}' will occur in ${event.notificationLength}`);
+    } else if (eventType === EventTypeEnumeration.Expired) {
+      console.log(`Event occurred '${event.name}'`);
+      if (event.recurring) {
+        GameServerService.getInstance().registerEvent(event, eventCallback);
+      }
     }
   };
   GameServerService.getInstance().registerEvent(timedEvents.bounty, eventCallback);
