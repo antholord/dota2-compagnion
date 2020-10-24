@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
 import { GameState } from "./definitions/game-state";
 
 export default Vue.extend({
