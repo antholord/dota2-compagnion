@@ -1,5 +1,10 @@
 module.exports = {
   pluginOptions: {
+    entry: {
+      app: [
+        "./src/main.js"
+      ]
+    },
     electronBuilder: {
       nodeIntegration: true,
       builderOptions: {
