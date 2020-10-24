@@ -1,10 +1,6 @@
 <template>
   <div id="app">
-    <img
-      alt="Vue logo"
-      src="./assets/logo.png"
-    >
-    <HelloWorld msg="TOTOTTO" />
+    <pre>{{ lastGameInfo }}</pre>
   </div>
 </template>
 
@@ -14,8 +10,14 @@ import HelloWorld from "./components/HelloWorld.vue";
 
 export default Vue.extend({
   name: "App",
-  components: {
-    HelloWorld
+  data: function() {
+    return { lastGameInfo: null as any };
+  },
+  mounted() {
+    this.$electron.ipcRenderer.on("game-info-update", (event, data) => {
+      console.log(data);
+      this.lastGameInfo = data;
+    });
   }
 });
 </script>

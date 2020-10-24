@@ -92,15 +92,16 @@ if (isDevelopment) {
 
 function createHttpServer() {
   const http = require("http");
-  const server = http.createServer(function(req, res) {
-    const data = [];
+  const server = http.createServer(function(req: any, res : any) {
+    const data: any[] = [];
 
-    req.on("data", chunk => {
+    req.on("data", (chunk: any) => {
       data.push(chunk);
     });
     req.on("end", () => {
-      console.log(JSON.parse(data));
-      win?.webContents.send("game-info-update", data);
+      // TODO , add real type for data
+      // console.log();
+      win?.webContents.send("game-info-update", JSON.parse(data as any));
     });
   });
   server.listen(4000);
