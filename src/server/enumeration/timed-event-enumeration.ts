@@ -1,4 +1,4 @@
 export enum TimedEventEnumeration {
-  BountyRune= 300,
+  BountyRune= 20,
   Shrine= 600
 }

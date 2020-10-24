@@ -80,6 +80,9 @@ app.on("ready", async() => {
 
   const eventCallback = (event: TimedEventModel): void => {
     console.log("Event occurred " + event);
+    if (event.recurring) {
+      GameServerService.getInstance().registerEvent(event, eventCallback);
+    }
   };
   GameServerService.getInstance().registerEvent(new TimedEventModel(true, TimedEventEnumeration.BountyRune), eventCallback);
 });
@@ -112,10 +115,6 @@ export function createHttpServer() {
       const state = JSON.parse(data as any) as GameStateModel;
       win?.webContents.send("game-info-update", state);
       const s1 = GameServerService.getInstance().updateAssets(state);
-      const eventCallback = (event: TimedEventModel): void => {
-        console.log("Event occurred " + event);
-      };
-      GameServerService.getInstance().registerEvent(new TimedEventModel(true, TimedEventEnumeration.BountyRune), eventCallback);
     });
   });
   server.listen(4000);

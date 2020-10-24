@@ -25,22 +25,34 @@ export class GameServerService {
   }
 
   public updateAssets(gameState: GameStateModel) {
-    const gameTime: number = gameState.map.clock_time;
-    if (this._time !== gameState) {
+    const gameTime: number = gameState.map.game_time;
+    if (gameTime != null && this._time !== gameTime) {
       console.log("Updating time from " + this._time + " to " + gameTime);
+      this._eventList = this._eventList.map(value => {
+        const difference: number = (gameTime - this._time);
+        console.log("Changing time from " + value[1] + " + " + difference);
+        return [value[0], value[1] + difference, value[2]];
+      });
+
       this._time = gameTime;
-      // TODO recalculate all events
     }
-    this._eventList.forEach((value) => {
-      console.log("hi");
-      if (this._time > value[1]) {
-        console.log(value[0]);
+    this._eventList.map((value, index) => {
+      console.log("Checking " + value[1]);
+      if (this._time === value[1]) {
+        const callback: (anEvent: TimedEventModel) => any = value[2];
+
+        callback(value[0]);
+        return index;
       }
-    });
+    }).filter((value) => value !== undefined)
+      .forEach(index => {
+      // @ts-ignore
+        this._eventList.splice(index, 1);
+      });
   }
 
   public registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel) => any) {
-    console.log("Registering " + event.event);
-    this._eventList.push([event, this._time, callback]);
+    console.log("Registering " + event._event);
+    this._eventList.push([event, this._time + event._event, callback]);
   }
 }
