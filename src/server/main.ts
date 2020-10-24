@@ -4,7 +4,7 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { GameStateModel } from "@/server/model/game-state-model";
 import { GameServerService } from "./service/game-server-service";
-import { TimedEventModel } from "@/server/model/timed-event-model";
+import {TimedEventModel, timedEvents} from "@/server/model/timed-event-model";
 import { TimedEventEnumeration } from "./enumeration/timed-event-enumeration";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -79,14 +79,12 @@ app.on("ready", async() => {
   createHttpServer();
 
   const eventCallback = (event: TimedEventModel): void => {
-    console.log("Event occurred " + event);
+    console.log("Event occurred " + event.name);
     if (event.recurring) {
       GameServerService.getInstance().registerEvent(event, eventCallback);
-
-      win?.webContents.send("Event occurred " + event.event);
     }
   };
-  GameServerService.getInstance().registerEvent(new TimedEventModel(true, TimedEventEnumeration.BountyRune), eventCallback);
+  GameServerService.getInstance().registerEvent(timedEvents.bounty, eventCallback);
 });
 
 // Exit cleanly on request from parent process in development mode.

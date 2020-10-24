@@ -1,25 +1,27 @@
 import { GameStateModel } from "@/server/model/game-state-model";
 import { TimedEventModel } from "@/server/model/timed-event-model";
 
-type Triple<T, K, Z> = [T, K, Z];
+interface RegisteredEvent {
+  event: TimedEventModel;
+  dueTime: number;
+  callbackFunction: (anEvent: TimedEventModel) => any;
+}
 
 export class GameServerService {
   private static instance: GameServerService;
   private _time: number = 0;
-  private _eventList: Array<Triple<TimedEventModel, number, (anEvent: TimedEventModel) => any>> = new Array();
+  private _eventList: Array<RegisteredEvent> = new Array();
 
   // eslint-disable-next-line no-useless-constructor
   private constructor() {
     setInterval(() => {
       this._time++;
-      this._eventList.map((value, index) => {
+      this._eventList.map((registeredEvent, index) => {
         if (this._time % 10 === 0) {
-          console.log(value[0].event + " still waiting for " + value[1]);
+          console.log(registeredEvent.event.name + " still waiting for " + registeredEvent.dueTime);
         }
-        if (this._time >= value[1]) {
-          const callback: (anEvent: TimedEventModel) => any = value[2];
-
-          callback(value[0]);
+        if (this._time >= registeredEvent.dueTime) {
+          registeredEvent.callbackFunction(registeredEvent.event);
           return index;
         }
       }).filter((value) => value !== undefined)
@@ -42,19 +44,18 @@ export class GameServerService {
     const gameTime: number = gameState.map.game_time;
     if (gameTime != null && this._time !== gameTime) {
       console.log("Updating time from " + this._time + " to " + gameTime);
-      this._eventList = this._eventList.map(value => {
+      this._eventList = this._eventList.map(registeredEvent => {
         const difference: number = (gameTime - this._time);
-        console.log("Changing time from " + value[1] + " + " + difference);
-        return [value[0], value[1] + difference, value[2]];
+        console.log("Changing time from " + registeredEvent.dueTime + " + " + difference);
+        return { event: registeredEvent.event, dueTime: registeredEvent.dueTime, callbackFunction: registeredEvent.callbackFunction };
       });
 
       this._time = gameTime;
     }
-
   }
 
   public registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel) => any) {
-    console.log("Registering " + event.event);
-    this._eventList.push([event, this._time + event.event, callback]);
+    console.log("Registering " + event.name);
+    this._eventList.push({ event: event, dueTime: this._time + event.length, callbackFunction: callback });
   }
 }
