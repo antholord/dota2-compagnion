@@ -1,11 +1,12 @@
 module.exports = {
+  pages: {
+    app: {
+      entry: "./src/renderer/main.ts"
+    }
+  },
   pluginOptions: {
-    entry: {
-      app: [
-        "./src/main.js"
-      ]
-    },
     electronBuilder: {
+      mainProcessFile: "./src/server/background.ts",
       nodeIntegration: true,
       builderOptions: {
         publish: [
@@ -30,8 +31,5 @@ module.exports = {
         }
       }
     }
-  } //,
-  // transpileDependencies: [
-  //   "vuetify"
-  // ]
+  }
 };

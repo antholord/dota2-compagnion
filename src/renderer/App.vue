@@ -6,14 +6,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { GameState } from "./definitions/game-state";
+import { GameState } from "../server/definitions/game-state";
 
 export default Vue.extend({
   name: "App",
   data: function() {
-    return {
-      lastGameInfo: null as GameState | null
-    };
+    return { lastGameInfo: null as GameState | null };
   },
   mounted() {
     this.$electron.ipcRenderer.on("game-info-update", (event, data) => {

@@ -11,7 +11,7 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "background.ts",
+  "main": "server/background.ts",
   "dependencies": {
     "vue": "^2.6.11",
     "vue-electron": "^1.0.6"
