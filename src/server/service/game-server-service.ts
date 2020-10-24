@@ -12,7 +12,21 @@ export class GameServerService {
   private constructor() {
     setInterval(() => {
       this._time++;
-      console.log(this._time);
+      this._eventList.map((value, index) => {
+        if (this._time % 10 === 0) {
+          console.log(value[0].event + " still waiting for " + value[1]);
+        }
+        if (this._time >= value[1]) {
+          const callback: (anEvent: TimedEventModel) => any = value[2];
+
+          callback(value[0]);
+          return index;
+        }
+      }).filter((value) => value !== undefined)
+        .forEach(index => {
+          // @ts-ignore
+          this._eventList.splice(index, 1);
+        });
     }, 1000);
   }
 
@@ -36,23 +50,11 @@ export class GameServerService {
 
       this._time = gameTime;
     }
-    this._eventList.map((value, index) => {
-      console.log("Checking " + value[1]);
-      if (this._time === value[1]) {
-        const callback: (anEvent: TimedEventModel) => any = value[2];
 
-        callback(value[0]);
-        return index;
-      }
-    }).filter((value) => value !== undefined)
-      .forEach(index => {
-      // @ts-ignore
-        this._eventList.splice(index, 1);
-      });
   }
 
   public registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel) => any) {
-    console.log("Registering " + event._event);
-    this._eventList.push([event, this._time + event._event, callback]);
+    console.log("Registering " + event.event);
+    this._eventList.push([event, this._time + event.event, callback]);
   }
 }

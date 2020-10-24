@@ -82,6 +82,8 @@ app.on("ready", async() => {
     console.log("Event occurred " + event);
     if (event.recurring) {
       GameServerService.getInstance().registerEvent(event, eventCallback);
+
+      win?.webContents.send("Event occurred " + event.event);
     }
   };
   GameServerService.getInstance().registerEvent(new TimedEventModel(true, TimedEventEnumeration.BountyRune), eventCallback);
