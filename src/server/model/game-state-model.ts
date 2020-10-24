@@ -83,7 +83,7 @@ export interface Hero {
         talent_8: boolean;
     }
 
-export interface GameState {
+export interface GameStateModel {
         provider: Provider;
         map: Map;
         player: Player;

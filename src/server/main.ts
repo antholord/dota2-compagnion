@@ -1,9 +1,10 @@
 "use strict";
-import { GameState } from "./definitions/game-state";
-
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+import { GameStateModel } from "@/server/model/game-state-model";
+import { GameServerService } from "./service/game-server-service";
+import { TimedEventModel } from "@/server/model/timed-event-model";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -75,6 +76,11 @@ app.on("ready", async() => {
   }
   createWindow();
   createHttpServer();
+
+  const eventCallback = (event: TimedEventModel): void => {
+    console.log("Event occurred " + event);
+  };
+  GameServerService.getInstance().registerEvent(new TimedEventModel(true, TimedEventEnumeration.BountyRune), eventCallback);
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -92,7 +98,7 @@ if (isDevelopment) {
   }
 }
 
-function createHttpServer() {
+export function createHttpServer() {
   const http = require("http");
   const server = http.createServer(function(req: any, res : any) {
     const data: any[] = [];
@@ -102,9 +108,14 @@ function createHttpServer() {
     });
     req.on("end", () => {
       // TODO , add real type for data
-      // console.log();
-      const state = JSON.parse(data as any) as GameState;
+      const state = JSON.parse(data as any) as GameStateModel;
       win?.webContents.send("game-info-update", state);
+      const s1 = GameServerService.getInstance().updateAssets(state);
+      const eventCallback = (event: TimedEventModel): void => {
+        console.log("Event occurred " + event);
+      };
+      GameServerService.getInstance().registerEvent(new TimedEventModel(true, TimedEventEnumeration.BountyRune), eventCallback);
+
     });
   });
   server.listen(4000);
