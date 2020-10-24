@@ -32,8 +32,8 @@ export class GameServerService {
       // TODO recalculate all events
     }
     this._eventList.forEach(function(value) {
-      console.log("hi")
-      if (this.time > value[1]) {
+      console.log("hi");
+      if (this._time > value[1]) {
         console.log(value[0]);
       }
     });
