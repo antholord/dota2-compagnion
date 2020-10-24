@@ -7,15 +7,15 @@
 <script lang="ts">
 import Vue from "vue";
 import HelloWorld from "./components/HelloWorld.vue";
+import { GameState } from "./definitions/game-state";
 
 export default Vue.extend({
   name: "App",
   data: function() {
-    return { lastGameInfo: null as any };
+    return { lastGameInfo: null as GameState | null };
   },
   mounted() {
     this.$electron.ipcRenderer.on("game-info-update", (event, data) => {
-      console.log(data);
       this.lastGameInfo = data;
     });
   }

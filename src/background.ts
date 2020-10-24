@@ -1,8 +1,10 @@
 "use strict";
+import { GameState } from "./definitions/game-state";
 
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -101,7 +103,8 @@ function createHttpServer() {
     req.on("end", () => {
       // TODO , add real type for data
       // console.log();
-      win?.webContents.send("game-info-update", JSON.parse(data as any));
+      const state = JSON.parse(data as any) as GameState;
+      win?.webContents.send("game-info-update", state);
     });
   });
   server.listen(4000);
