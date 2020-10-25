@@ -49,7 +49,11 @@ export class GameServerService {
   }
 
   public updateAssets(gameState: GameStateModel): number {
-    const gameTime: number = gameState.map.game_time | 0;
+    if (gameState.map === undefined) {
+      this._time = 0;
+      return this._time;
+    }
+    const gameTime: number = gameState.map.clock_time;
     // if the game server time and the in game time is different, we have to adjust the game server time.
     // TODO delta de 2 sec et plus
     const timeDifference: number = (gameTime - this._time);
