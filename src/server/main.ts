@@ -91,6 +91,7 @@ app.on("ready", async() => {
     }
   };
   GameServerService.getInstance().registerEvent(timedEvents.bounty, eventCallback);
+  GameServerService.getInstance().registerEvent(timedEvents.outpost, eventCallback);
 });
 
 // Exit cleanly on request from parent process in development mode.
