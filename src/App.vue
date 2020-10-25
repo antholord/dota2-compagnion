@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { GameStateModel } from "../server/model/game-state-model";
+import { GameStateModel } from "./server/model/game-state-model";
 
 export default Vue.extend({
   name: "App",

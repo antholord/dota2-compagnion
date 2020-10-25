@@ -1,6 +1,6 @@
-import {GameStateModel} from "@/server/model/game-state-model";
-import {TimedEventModel} from "@/server/model/timed-event-model";
-import {EventTypeEnumeration} from "@/server/enumeration/event-type-enumeration";
+import { GameStateModel } from "@/server/model/game-state-model";
+import { TimedEventModel } from "@/server/model/timed-event-model";
+import { EventTypeEnumeration } from "@/server/enumeration/event-type-enumeration";
 
 interface RegisteredEvent {
   event: TimedEventModel;

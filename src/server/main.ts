@@ -1,11 +1,11 @@
 "use strict";
-import {app, BrowserWindow, protocol} from "electron";
-import {createProtocol} from "vue-cli-plugin-electron-builder/lib";
-import installExtension, {VUEJS_DEVTOOLS} from "electron-devtools-installer";
-import {GameStateModel} from "@/server/model/game-state-model";
-import {GameServerService} from "./service/game-server-service";
-import {TimedEventModel, timedEvents} from "@/server/model/timed-event-model";
-import {EventTypeEnumeration} from "@/server/enumeration/event-type-enumeration";
+import { app, BrowserWindow, protocol } from "electron";
+import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
+import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+import { GameStateModel } from "@/server/model/game-state-model";
+import { GameServerService } from "./service/game-server-service";
+import { TimedEventModel, timedEvents } from "@/server/model/timed-event-model";
+import { EventTypeEnumeration } from "@/server/enumeration/event-type-enumeration";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -81,8 +81,10 @@ app.on("ready", async() => {
   const eventCallback = (event: TimedEventModel, eventType: EventTypeEnumeration): void => {
     if (eventType === EventTypeEnumeration.Notification) {
       console.log(`Event notification '${event.name}' will occur in ${event.notificationLength}`);
+      win?.webContents.send("game-info-update", `${event.name} in ${event.notificationLength}`);
     } else if (eventType === EventTypeEnumeration.Expired) {
       console.log(`Event occurred '${event.name}'`);
+      win?.webContents.send("game-info-update", `${event.name} in now!!!`);
       if (event.recurring) {
         GameServerService.getInstance().registerEvent(event, eventCallback);
       }
@@ -117,8 +119,7 @@ export function createHttpServer() {
     req.on("end", () => {
       // TODO , add real type for data
       const state = JSON.parse(data as any) as GameStateModel;
-      win?.webContents.send("game-info-update", state);
-      const s1 = GameServerService.getInstance().updateAssets(state);
+      GameServerService.getInstance().updateAssets(state);
     });
   });
   server.listen(4000);
