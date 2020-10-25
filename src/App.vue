@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <pre>{{ lastGameInfo }}</pre>
+    <pre>{{ gameTime }}</pre>
+    <pre>{{ gameNotifications }}</pre>
   </div>
 </template>
 
@@ -11,11 +12,16 @@ import { GameStateModel } from "./server/model/game-state-model";
 export default Vue.extend({
   name: "App",
   data: function() {
-    return { lastGameInfo: null as GameStateModel | null };
+    return { gameTime: "00:00", gameNotifications: "" };
   },
   mounted() {
-    this.$electron.ipcRenderer.on("game-info-update", (event, data) => {
-      this.lastGameInfo = data;
+    this.$electron.ipcRenderer.on("game-notifications", (event, data) => {
+      this.gameNotifications = data;
+    });
+    this.$electron.ipcRenderer.on("game-time", (event, data) => {
+      const minutes: number = Math.floor(data / 60);
+      const seconds: number = data % 60;
+      this.gameTime = `${minutes}:${seconds}`;
     });
   }
 });

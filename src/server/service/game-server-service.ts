@@ -1,6 +1,7 @@
-import { GameStateModel } from "@/server/model/game-state-model";
-import { TimedEventModel } from "@/server/model/timed-event-model";
-import { EventTypeEnumeration } from "@/server/enumeration/event-type-enumeration";
+import {GameStateModel} from "@/server/model/game-state-model";
+import {TimedEventModel} from "@/server/model/timed-event-model";
+import {EventTypeEnumeration} from "@/server/enumeration/event-type-enumeration";
+import {EventTimeTypeEnumeration} from "@/server/enumeration/event-time-type-enumeration";
 
 interface RegisteredEvent {
   event: TimedEventModel;
@@ -17,6 +18,7 @@ export class GameServerService {
   private constructor() {
     setInterval(() => {
       this._time++;
+      console.log(this._time);
       this._eventList.map((registeredEvent, index) => {
         // TODO temporary log to see all temporary actions
         if (this._time % 10 === 0) {
@@ -46,24 +48,38 @@ export class GameServerService {
     return GameServerService.instance;
   }
 
-  public updateAssets(gameState: GameStateModel) {
+  public updateAssets(gameState: GameStateModel): number {
     const gameTime: number = gameState.map.game_time;
     // if the game server time and the in game time is different, we have to adjust the game server time.
-    if (gameTime != null && this._time !== gameTime) {
+    // TODO delta de 2 sec et plus
+    const timeDifference: number = (gameTime - this._time);
+    if (gameTime != null && Math.abs(timeDifference) > 1) {
       console.log(`Game time correction from ${this._time} to ${gameTime}`);
       this._eventList = this._eventList.map(registeredEvent => {
-        const timeDifference: number = (gameTime - this._time);
-        console.log(`Event '${registeredEvent.event.name}' time correction from ${registeredEvent.dueTime} adding ${timeDifference}`);
-        return { event: registeredEvent.event, dueTime: registeredEvent.dueTime, callbackFunction: registeredEvent.callbackFunction };
+        const eventTime = registeredEvent.event.eventTimeType === EventTimeTypeEnumeration.Relative ? this.getRelativeTime(registeredEvent.event.length, gameTime) : registeredEvent.dueTime + timeDifference;
+
+        console.log(`Event '${registeredEvent.event.name}' time correction from ${registeredEvent.dueTime} adding ${eventTime}`);
+        return { event: registeredEvent.event, dueTime: eventTime, callbackFunction: registeredEvent.callbackFunction };
       });
 
       this._time = gameTime;
     }
+    return this._time;
   }
 
   public registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel, eventType: EventTypeEnumeration) => any) {
-    const eventTime = this._time + event.length;
+    const eventTime = event.eventTimeType === EventTimeTypeEnumeration.Relative ? this.getRelativeTime(event.length, this._time) : this.getAbsoluteTime(event.length, this._time);
+
     console.log(`Registering ${event.name} occurring at ${eventTime}`);
     this._eventList.push({ event: event, dueTime: eventTime, callbackFunction: callback });
+  }
+
+  private getRelativeTime(eventTime: number, currentTime: number) {
+    console.log(`current time: ${currentTime} event time: ${eventTime}`);
+    return currentTime < eventTime ? eventTime : (Math.floor(currentTime / eventTime) + 1) * eventTime;
+  }
+
+  private getAbsoluteTime(eventTime: number, currentTime: number) {
+    return currentTime + eventTime;
   }
 }
