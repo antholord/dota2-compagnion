@@ -3,7 +3,7 @@ import { app, BrowserWindow, protocol } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { GameStateModel } from "@/server/model/game-state-model";
-import { GameServerService } from "./service/game-server-service";
+import GameEventService from "./service/game-event-service";
 import { TimedEventModel, timedEvents } from "@/server/model/timed-event-model";
 import { EventTypeEnumeration } from "@/server/enumeration/event-type-enumeration";
 
@@ -86,12 +86,12 @@ app.on("ready", async() => {
       console.log(`Event occurred '${event.name}'`);
       win?.webContents.send("game-event-trigger", event);
       if (event.recurring) {
-        GameServerService.getInstance().registerEvent(event, eventCallback);
+        GameEventService.registerEvent(event, eventCallback);
       }
     }
   };
-  GameServerService.getInstance().registerEvent(timedEvents.bounty, eventCallback);
-  GameServerService.getInstance().registerEvent(timedEvents.outpost, eventCallback);
+  GameEventService.registerEvent(timedEvents.bounty, eventCallback);
+  GameEventService.registerEvent(timedEvents.outpost, eventCallback);
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -118,9 +118,8 @@ export function createHttpServer() {
       data.push(chunk);
     });
     req.on("end", () => {
-      // TODO , add real type for data
       const state = JSON.parse(data as any) as GameStateModel;
-      const time = GameServerService.getInstance().updateAssets(state);
+      const time = GameEventService.updateState(state);
       win?.webContents.send("game-time", time);
     });
   });
