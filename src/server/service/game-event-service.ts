@@ -12,8 +12,12 @@ interface RegisteredEvent {
 let gameTime = 0;
 const events: RegisteredEvent[] = [];
 
-const loop = setInterval(executeEventLoop, 1000);
-executeEventLoop();
+let loop: NodeJS.Timeout;
+
+function startGame() {
+  loop = setInterval(executeEventLoop, 1000);
+  executeEventLoop();
+}
 
 function executeEventLoop() {
   events.forEach((timedEvent, i, array) => {
@@ -48,6 +52,8 @@ function getAbsoluteTime(eventTime: number, currentTime: number) {
 };
 
 function updateState(gameState: GameStateModel): number {
+  if (!loop) startGame();
+
   if (gameState.map == null) {
     gameTime = 0;
     return gameTime;
