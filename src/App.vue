@@ -8,6 +8,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { GameStateModel } from "./server/model/game-state-model";
+import { TimedEventModel, timedEvents } from "@/server/model/timed-event-model";
+// @ts-ignore
+import bounty from "./assets/bounty.wav";
+// @ts-ignore
+import outpost from "./assets/outpost.wav";
 
 export default Vue.extend({
   name: "App",
@@ -15,8 +20,18 @@ export default Vue.extend({
     return { gameTime: "00:00", gameNotifications: "" };
   },
   mounted() {
-    this.$electron.ipcRenderer.on("game-notifications", (event, data) => {
-      this.gameNotifications = data;
+    this.$electron.ipcRenderer.on("game-event-notification", (event, data: TimedEventModel) => {
+      this.gameNotifications = `Event ${data.name} happening in ${data.notificationLength}`;
+      if (data.name === timedEvents.bounty.name) {
+        const audio = new Audio(bounty);
+        audio.play();
+      } else if (data.name === timedEvents.outpost.name) {
+        const audio = new Audio(outpost);
+        audio.play();
+      }
+    });
+    this.$electron.ipcRenderer.on("game-event-trigger", (event, data: TimedEventModel) => {
+      this.gameNotifications = `Event ${data.name} happening now!!`;
     });
     this.$electron.ipcRenderer.on("game-time", (event, data) => {
       const minutes: number = Math.floor(data / 60);

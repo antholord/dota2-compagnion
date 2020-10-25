@@ -6,9 +6,10 @@ export interface TimedEventModel {
   notificationLength: number;
   name: string;
   eventTimeType: EventTimeTypeEnumeration;
+  soundMp3Path: string;
 }
 
 export const timedEvents = Object.freeze({
-  bounty: { recurring: true, length: 300, notificationLength: 15, name: "Bounty Runes", eventTimeType: EventTimeTypeEnumeration.Relative } as TimedEventModel,
-  shrine: { recurring: true, length: 600, notificationLength: 45, name: "Shrines exp event", eventTimeType: EventTimeTypeEnumeration.Relative } as TimedEventModel
+  bounty: { recurring: true, length: 20, notificationLength: 10, name: "Bounty Runes", eventTimeType: EventTimeTypeEnumeration.Relative, soundMp3Path: "bounty.wav" } as TimedEventModel,
+  outpost: { recurring: true, length: 30, notificationLength: 15, name: "Shrines exp event", eventTimeType: EventTimeTypeEnumeration.Relative, soundMp3Path: "outpost.wav" } as TimedEventModel
 });

@@ -81,10 +81,10 @@ app.on("ready", async() => {
   const eventCallback = (event: TimedEventModel, eventType: EventTypeEnumeration): void => {
     if (eventType === EventTypeEnumeration.Notification) {
       console.log(`Event notification '${event.name}' will occur in ${event.notificationLength}`);
-      win?.webContents.send("game-notifications", `${event.name} in ${event.notificationLength}`);
+      win?.webContents.send("game-event-notification", event);
     } else if (eventType === EventTypeEnumeration.Expired) {
       console.log(`Event occurred '${event.name}'`);
-      win?.webContents.send("game-notifications", `${event.name} in now!!!`);
+      win?.webContents.send("game-event-trigger", event);
       if (event.recurring) {
         GameServerService.getInstance().registerEvent(event, eventCallback);
       }
