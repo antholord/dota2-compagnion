@@ -1,12 +1,11 @@
 import { GameStateModel } from "@/server/model/game-state-model";
 import { TimedEventModel } from "@/server/model/timed-event-model";
-import { EventTypeEnumeration } from "@/server/enumeration/event-type-enumeration";
-import { EventTimeTypeEnumeration } from "@/server/enumeration/event-time-type-enumeration";
+import { EventTypeEnum, EventTimeTypeEnum } from "@/server/enums/events";
 
 interface RegisteredEvent {
   event: TimedEventModel;
   dueTime: number;
-  callbackFunction: (event: TimedEventModel, eventType: EventTypeEnumeration) => any;
+  callbackFunction: (event: TimedEventModel, eventType: EventTypeEnum) => any;
 }
 
 let gameTime = 0;
@@ -26,17 +25,17 @@ function executeEventLoop() {
     }
 
     if (gameTime >= timedEvent.dueTime) {
-      timedEvent.callbackFunction(timedEvent.event, EventTypeEnumeration.Expired);
+      timedEvent.callbackFunction(timedEvent.event, EventTypeEnum.Expired);
       array.splice(i, 1);
     } else if (gameTime < timedEvent.dueTime && gameTime === timedEvent.dueTime - timedEvent.event.notificationLength) {
-      timedEvent.callbackFunction(timedEvent.event, EventTypeEnumeration.Notification);
+      timedEvent.callbackFunction(timedEvent.event, EventTypeEnum.Notification);
     }
   });
   gameTime++;
 }
 
-function registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel, eventType: EventTypeEnumeration) => any) {
-  const eventTime = event.eventTimeType === EventTimeTypeEnumeration.Relative ? getRelativeTime(event.length, gameTime) : getAbsoluteTime(event.length, gameTime);
+function registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel, eventType: EventTypeEnum) => any) {
+  const eventTime = event.eventTimeType === EventTimeTypeEnum.Relative ? getRelativeTime(event.length, gameTime) : getAbsoluteTime(event.length, gameTime);
 
   console.log(`Registering ${event.name} occurring at ${eventTime}`);
   events.push({ event: event, dueTime: eventTime, callbackFunction: callback });
@@ -66,7 +65,7 @@ function updateState(gameState: GameStateModel): number {
   if (gameTime != null && Math.abs(timeDifference) > 1) {
     console.log(`Game time correction from ${gameTime} to ${newGameTime}`);
     events.forEach(registeredEvent => {
-      const eventTime = registeredEvent.event.eventTimeType === EventTimeTypeEnumeration.Relative ? getRelativeTime(registeredEvent.event.length, gameTime) : registeredEvent.dueTime + timeDifference;
+      const eventTime = registeredEvent.event.eventTimeType === EventTimeTypeEnum.Relative ? getRelativeTime(registeredEvent.event.length, gameTime) : registeredEvent.dueTime + timeDifference;
       console.log(`Event '${registeredEvent.event.name}' time correction from ${registeredEvent.dueTime} adding ${eventTime}`);
       registeredEvent.dueTime = eventTime;
     });

@@ -5,7 +5,8 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { GameStateModel } from "@/server/model/game-state-model";
 import GameEventService from "./service/game-event-service";
 import { TimedEventModel, timedEvents } from "@/server/model/timed-event-model";
-import { EventTypeEnumeration } from "@/server/enumeration/event-type-enumeration";
+import { EventTypeEnum } from "@/server/enums/events";
+import ElectronStore, { setupConfigEvents } from "@/server/electron-store";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -75,14 +76,16 @@ app.on("ready", async() => {
       console.error("Vue Devtools failed to install:", e.toString());
     }
   }
+  setupConfigEvents();
+  // load events from config to service?
   createWindow();
   createHttpServer();
 
-  const eventCallback = (event: TimedEventModel, eventType: EventTypeEnumeration): void => {
-    if (eventType === EventTypeEnumeration.Notification) {
+  const eventCallback = (event: TimedEventModel, eventType: EventTypeEnum): void => {
+    if (eventType === EventTypeEnum.Notification) {
       console.log(`Event notification '${event.name}' will occur in ${event.notificationLength}`);
       win?.webContents.send("game-event-notification", event);
-    } else if (eventType === EventTypeEnumeration.Expired) {
+    } else if (eventType === EventTypeEnum.Expired) {
       console.log(`Event occurred '${event.name}'`);
       win?.webContents.send("game-event-trigger", event);
       if (event.recurring) {

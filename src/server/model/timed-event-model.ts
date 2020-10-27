@@ -1,15 +1,15 @@
-import { EventTimeTypeEnumeration } from "@/server/enumeration/event-time-type-enumeration";
+import { EventTimeTypeEnum } from "@/server/enums/events";
 
 export interface TimedEventModel {
   recurring: boolean;
   length: number;
   notificationLength: number;
   name: string;
-  eventTimeType: EventTimeTypeEnumeration;
-  soundMp3Path: string;
+  eventTimeType: EventTimeTypeEnum;
+  soundFileName: string;
 }
 
 export const timedEvents = Object.freeze({
-  bounty: { recurring: true, length: 300, notificationLength: 25, name: "Bounty Runes", eventTimeType: EventTimeTypeEnumeration.Relative, soundMp3Path: "bounty.wav" } as TimedEventModel,
-  outpost: { recurring: true, length: 600, notificationLength: 45, name: "Shrines exp event", eventTimeType: EventTimeTypeEnumeration.Relative, soundMp3Path: "outpost.wav" } as TimedEventModel
+  bounty: { recurring: true, length: 10, notificationLength: 5, name: "Bounty Runes", eventTimeType: EventTimeTypeEnum.Relative, soundFileName: "bounty.wav" } as TimedEventModel,
+  outpost: { recurring: true, length: 600, notificationLength: 45, name: "Shrines exp event", eventTimeType: EventTimeTypeEnum.Relative, soundFileName: "outpost.wav" } as TimedEventModel
 });
