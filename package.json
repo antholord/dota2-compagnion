@@ -13,9 +13,12 @@
   },
   "main": "server/main.ts",
   "dependencies": {
+    "@mdi/font": "^3.6.95",
     "electron-store": "^6.0.1",
+    "roboto-fontface": "*",
     "vue": "^2.6.11",
-    "vue-electron": "^1.0.6"
+    "vue-electron": "^1.0.6",
+    "vuetify": "^2.3.16"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
@@ -41,7 +44,9 @@
     "sass-loader": "^10.0.3",
     "typescript": "~4.0.5",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.4",
-    "vue-template-compiler": "^2.6.12"
+    "vue-cli-plugin-vuetify": "~2.0.7",
+    "vue-template-compiler": "^2.6.12",
+    "vuetify-loader": "^1.3.0"
   },
   "eslintConfig": {
     "root": true,
