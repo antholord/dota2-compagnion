@@ -1,19 +1,11 @@
 <template>
   <md-field>
     <label for="name">Name</label>
-    <!-- <md-input
+    <md-input
       name="name"
-      v-model="model.name"
-      :disabled="sending"
+      :value="value.name"
+      @input="$emit('input', $event.target.value)"
     />
-    <span
-      class="md-error"
-      v-if="!$v.form.firstName.required"
-    >The first name is required</span>
-    <span
-      class="md-error"
-      v-else-if="!$v.form.firstName.minlength"
-    >Invalid first name</span> -->
   </md-field>
 </template>
 
@@ -24,15 +16,16 @@ import { defaultTimedEvent, TimedEventModel } from "@/server/model/timed-event-m
 import { EventTimeTypeEnum } from "@/server/enums/events";
 
 export default Vue.extend({
+  name: "TimerEvent",
   props: {
-    model: {
+    value: {
       type: Object as () => TimedEventModel,
       default() {
         return Object.assign({}, defaultTimedEvent);
       }
     }
   },
-  name: "TimerEvent",
+
   created() {
 
   },

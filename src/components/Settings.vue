@@ -15,9 +15,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { ISettings } from "@/settings";
+import TimerEvent from "./TimerEvent.vue";
 
 export default Vue.extend({
   name: "Settings",
+  components: {
+    TimerEvent
+  },
   data() {
     return { settings: {} as ISettings };
   },
