@@ -2,6 +2,8 @@
   <div id="app">
     <pre>{{ gameTime }}</pre>
     <pre>{{ gameNotifications }}</pre>
+
+    <Settings />
   </div>
 </template>
 
@@ -9,16 +11,15 @@
 import Vue from "vue";
 import { GameStateModel } from "./server/model/game-state-model";
 import { TimedEventModel, timedEvents } from "@/server/model/timed-event-model";
-import { ISettings } from "./settings";
+import Settings from "@/components/Settings.vue";
 
 export default Vue.extend({
   name: "App",
-  data: function() {
-    return { gameTime: "00:00", gameNotifications: "", settings: {} as ISettings };
+  components: {
+    Settings
   },
-  created() {
-    this.settings = this.$electron.ipcRenderer.sendSync("get-settings");
-    console.log(this.settings);
+  data: function() {
+    return { gameTime: "00:00", gameNotifications: "" };
   },
   mounted() {
     this.$electron.ipcRenderer.on("game-event-notification", (event, data: TimedEventModel) => {
@@ -39,12 +40,4 @@ export default Vue.extend({
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
