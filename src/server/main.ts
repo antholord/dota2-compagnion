@@ -83,7 +83,7 @@ app.on("ready", async() => {
 
   const eventCallback = (event: TimedEventModel, eventType: EventTypeEnum): void => {
     if (eventType === EventTypeEnum.Notification) {
-      console.log(`Event notification '${event.name}' will occur in ${event.notificationLength}`);
+      console.log(`Event notification '${event.name}' will occur in ${event.notificationDuration}`);
       win?.webContents.send("game-event-notification", event);
     } else if (eventType === EventTypeEnum.Expired) {
       console.log(`Event occurred '${event.name}'`);

@@ -89,7 +89,8 @@
           "svg": "always",
           "math": "always"
         }
-      ]
+      ],
+      "vue/no-mutating-props": "off"
     }
   },
   "browserslist": [

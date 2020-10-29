@@ -27,7 +27,7 @@ function executeEventLoop() {
     if (gameTime >= timedEvent.dueTime) {
       timedEvent.callbackFunction(timedEvent.event, EventTypeEnum.Expired);
       array.splice(i, 1);
-    } else if (gameTime < timedEvent.dueTime && gameTime === timedEvent.dueTime - timedEvent.event.notificationLength) {
+    } else if (gameTime < timedEvent.dueTime && gameTime === timedEvent.dueTime - timedEvent.event.notificationDuration) {
       timedEvent.callbackFunction(timedEvent.event, EventTypeEnum.Notification);
     }
   });
@@ -35,7 +35,7 @@ function executeEventLoop() {
 }
 
 function registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel, eventType: EventTypeEnum) => any) {
-  const eventTime = event.eventTimeType === EventTimeTypeEnum.Relative ? getRelativeTime(event.length, gameTime) : getAbsoluteTime(event.length, gameTime);
+  const eventTime = event.eventTimeType === EventTimeTypeEnum.Relative ? getRelativeTime(event.duration, gameTime) : getAbsoluteTime(event.duration, gameTime);
 
   console.log(`Registering ${event.name} occurring at ${eventTime}`);
   events.push({ event: event, dueTime: eventTime, callbackFunction: callback });
@@ -65,7 +65,10 @@ function updateState(gameState: GameStateModel): number {
   if (gameTime != null && Math.abs(timeDifference) > 1) {
     console.log(`Game time correction from ${gameTime} to ${newGameTime}`);
     events.forEach(registeredEvent => {
-      const eventTime = registeredEvent.event.eventTimeType === EventTimeTypeEnum.Relative ? getRelativeTime(registeredEvent.event.length, gameTime) : registeredEvent.dueTime + timeDifference;
+      const eventTime = registeredEvent.event.eventTimeType === EventTimeTypeEnum.Relative
+        ? getRelativeTime(registeredEvent.event.duration, gameTime)
+        : registeredEvent.dueTime + timeDifference;
+
       console.log(`Event '${registeredEvent.event.name}' time correction from ${registeredEvent.dueTime} adding ${eventTime}`);
       registeredEvent.dueTime = eventTime;
     });

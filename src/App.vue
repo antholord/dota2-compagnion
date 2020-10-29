@@ -1,9 +1,13 @@
 <template>
   <div id="app">
-    <pre>{{ gameTime }}</pre>
-    <pre>{{ gameNotifications }}</pre>
+    <md-app>
+      <md-app-content>
+        <pre>{{ gameTime }}</pre>
+        <pre>{{ gameNotifications }}</pre>
 
-    <Settings />
+        <Settings />
+      </md-app-content>
+    </md-app>
   </div>
 </template>
 
@@ -23,7 +27,7 @@ export default Vue.extend({
   },
   mounted() {
     this.$electron.ipcRenderer.on("game-event-notification", (event, data: TimedEventModel) => {
-      this.gameNotifications = `Event ${data.name} happening in ${data.notificationLength}`;
+      this.gameNotifications = `Event ${data.name} happening in ${data.notificationDuration}`;
       const audio = new Audio(`/sounds/${data.soundFileName}`);
       audio.play();
     });

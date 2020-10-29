@@ -7,21 +7,14 @@ const store = new Store<ISettings>({
 });
 
 export function setupConfigEvents() {
+  // store.reset("customEvents");
   ipcMain.on("get-settings", (e) => {
     e.returnValue = store.store;
   });
-  // ipcMain.on(PUSH_CONFIG, (e, cfg) => {
-  //   const old = config.store;
-  //   Object.setPrototypeOf(old, Object.prototype);
-  //   if (!isDeepEq(cfg, old)) {
-  //     batchUpdateConfig(cfg, false);
-  //   }
-  // });
-  // ipcMain.on(CLOSE_SETTINGS_WINDOW, (e, cfg) => {
-  //   if (cfg != null) {
-  //     batchUpdateConfig(cfg, true);
-  //   }
-  // });
+  ipcMain.on("update-settings", (e, settings) => {
+    store.store = settings;
+    e.returnValue = store.store;
+  });
 }
 
 export default store;
