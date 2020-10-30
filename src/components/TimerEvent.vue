@@ -13,12 +13,33 @@
           class="md-layout-item"
         >
           <md-field style="width:75px;">
-            <label for="duration">Duration</label>
+            <label for="duration">Duration (seconds)</label>
             <md-input
               name="duration"
               v-model="model.duration"
             />
           </md-field>
+        </div>
+        <div
+          class="md-layout-item"
+        >
+          <md-field>
+            <label for="notification">Notification Duration</label>
+            <md-input
+              name="notification"
+              v-model="model.notification"
+            />
+          </md-field>
+        </div>
+        <div
+          class="md-layout-item"
+        >
+          <md-autocomplete
+            v-model="model.soundFileName"
+            :md-options="countries"
+          >
+            <label>Country</label>
+          </md-autocomplete>
         </div>
       </div>
     </div>
@@ -51,7 +72,9 @@ export default Vue.extend({
       required: true
     }
   },
+  data() {
 
+  },
   created() {
 
   },

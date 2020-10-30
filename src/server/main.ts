@@ -5,7 +5,7 @@ import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { GameStateModel } from "@/server/model/game-state-model";
 import GameEventService from "./service/game-event-service";
 import { TimedEventModel, timedEvents } from "@/server/model/timed-event-model";
-import { EventTypeEnum } from "@/server/enums/events";
+import { EventTimeTypeEnum, EventTypeEnum } from "@/server/enums/events";
 import ElectronStore, { setupConfigEvents } from "@/server/electron-store";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -88,7 +88,7 @@ app.on("ready", async() => {
     } else if (eventType === EventTypeEnum.Expired) {
       console.log(`Event occurred '${event.name}'`);
       win?.webContents.send("game-event-trigger", event);
-      if (event.recurring) {
+      if (event.eventTimeType === EventTimeTypeEnum.Relative) {
         GameEventService.registerEvent(event, eventCallback);
       }
     }
