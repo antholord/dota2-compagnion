@@ -43,7 +43,7 @@
           name="select"
           v-model="model.soundFileName"
           :options="sounds"
-          :options-limit="100"
+          :options-limit="3000"
           select-label=""
           placeholder="Select Sound"
           style="max-width:400px;"
@@ -64,23 +64,19 @@
                 style="display:inline-block"
                 @click="playSound($event, props.option)"
               >
-                <PlayIcon
-                  size="30"
+                <md-icon
                   @click="playSound($event, props.option)"
-                  style="padding-left:5px;color:green;"
-                />
+                  style="padding-left:10px;color:green;"
+                  class="md-size-2x"
+                >
+                  play_arrow
+                </md-icon>
               </div>
             </div>
           </template>
         </Multiselect>
       </div>
     </div>
-    <md-button
-      class="md-dense md-raised md-primary"
-      @click="save"
-    >
-      UPDATE
-    </md-button>
   </div>
 </template>
 
@@ -89,14 +85,12 @@ import Vue from "vue";
 import { ISettings } from "@/settings";
 import { defaultTimedEvent, TimedEventModel } from "@/server/model/timed-event-model";
 import { EventTimeTypeEnum } from "@/server/enums/events";
-import PlayIcon from "mdi-vue/Play";
 import Multiselect from "vue-multiselect";
 
 export default Vue.extend({
   name: "TimerEvent",
   components: {
-    Multiselect,
-    PlayIcon
+    Multiselect
   },
   props: {
     model: {
