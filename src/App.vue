@@ -45,4 +45,11 @@ export default Vue.extend({
 </script>
 
 <style>
+#app {
+  height: 100vh;
+}
+
+.md-app {
+  height: 100%;
+}
 </style>

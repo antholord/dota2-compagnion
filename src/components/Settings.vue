@@ -1,8 +1,11 @@
 <template>
   <div>
     <h1>Settings</h1>
-    <div class="md-layout md-gutter">
-      <div class="md-layout-item">
+    <div
+      class="md-layout md-gutter"
+      style="max-width:800px;"
+    >
+      <div class="md-layout-item md-size-30">
         <md-list>
           <md-list-item
             v-for="event in settings.customEvents"
