@@ -349,6 +349,13 @@
   dependencies:
     source-map "^0.6.1"
 
+"@types/vuelidate@^0.7.13":
+  version "0.7.13"
+  resolved "https://registry.yarnpkg.com/@types/vuelidate/-/vuelidate-0.7.13.tgz#6e7249e1d6b72b3aed14f4439a082e14662c485e"
+  integrity sha512-CFyaS5yov3HjwoZrQyehiE1cNkyuN0/EDQfpeneWQFC9onJ0ieQL6dgFxN6zzPMHDZ87If3UH9WcgkPB4vbcoQ==
+  dependencies:
+    vue "^2.6.11"
+
 "@types/webpack-dev-server@^3.11.0":
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/@types/webpack-dev-server/-/webpack-dev-server-3.11.0.tgz#bcc3b85e7dc6ac2db25330610513f2228c2fcfb2"
@@ -2490,14 +2497,7 @@ debug@^3.1.1, debug@^3.2.5:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.2.0.tgz#7f150f93920e94c58f5574c2fd01a3110effe7f1"
-  integrity sha512-IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==
-  dependencies:
-    ms "2.1.2"
-
-debug@^4.3.0:
+debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.0.tgz#efa41cbf14fc9448075367fdaaddf82376da211e"
   integrity sha512-jjO6JD2rKfiZQnBoRzhRTbXjHLGLfH+UtGkWLc/UXAh/rzZMyjbgn0NcfFpqT8nd1kTtFnDiJcrIFkq4UKeJVg==
@@ -8920,10 +8920,20 @@ vue-toc@0.0.1:
   dependencies:
     vue "^2.6.10"
 
+vue-typed-mixins@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/vue-typed-mixins/-/vue-typed-mixins-0.2.0.tgz#d369c186a392780bbbe9f1b28a4cdcf62bec9053"
+  integrity sha512-0OxuinandPWv3nm5k/reYkuKtX3jjPZ40Sy9roJz0ih8PUzmI7zSRiXFEJ62LsyRegw9Tqy+qMkajk7ipKP8Vg==
+
 vue@^2.6.10, vue@^2.6.11:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg==
+
+vuelidate@^0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/vuelidate/-/vuelidate-0.7.6.tgz#84100c13b943470660d0416642845cd2a1edf4b2"
+  integrity sha512-suzIuet1jGcyZ4oUSW8J27R2tNrJ9cIfklAh63EbAkFjE380iv97BAiIeolRYoB9bF9usBXCu4BxftWN1Dkn3g==
 
 watchpack-chokidar2@^2.0.0:
   version "2.0.0"

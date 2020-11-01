@@ -31,7 +31,7 @@
           <label for="notification">Warning Delay</label>
           <md-input
             name="notification"
-            v-model="model.notification"
+            v-model="model.notificationDuration"
           />
         </md-field>
       </div>
@@ -98,10 +98,6 @@ export default Vue.extend({
       default() {
         return Object.assign({}, defaultTimedEvent);
       }
-    },
-    save: {
-      type: Function,
-      required: true
     }
   },
   data() {

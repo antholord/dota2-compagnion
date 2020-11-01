@@ -18,6 +18,14 @@
         class="md-layout-item md-size-30 event-list"
       >
         <md-list style="padding:0px;">
+          <md-list-item @click="addEvent">
+            <div>
+              <md-icon style="margin-top:-3px;padding-right:5px;">
+                add_alarm
+              </md-icon>
+              <span>Add new Event</span>
+            </div>
+          </md-list-item>
           <md-list-item
             v-for="event in settings.customEvents"
             :key="event.name"
@@ -57,9 +65,11 @@ import Vue from "vue";
 import { ISettings } from "@/settings";
 import TimerEvent from "./TimerEvent.vue";
 import VolumeSlider from "./VolumeSlider.vue";
-import { TimedEventModel } from "@/server/model/timed-event-model";
-
-export default Vue.extend({
+import { defaultTimedEvent, TimedEventModel } from "@/server/model/timed-event-model";
+import { EventTimeTypeEnum } from "@/server/enums/events";
+import ValidationMixin from "../mixins/ValidationMixin";
+import mixins from "vue-typed-mixins";
+export default mixins(ValidationMixin).extend({
   name: "Settings",
   components: {
     TimerEvent,
@@ -76,9 +86,12 @@ export default Vue.extend({
     }
   },
   mounted() {
-
+    this.validate(this);
   },
   methods: {
+    addEvent() {
+      this.settings.customEvents.push(Object.assign({}, defaultTimedEvent));
+    },
     updateSelectedEvent(newEvent) {
       if (this.selectedEvent) {
         // save old event

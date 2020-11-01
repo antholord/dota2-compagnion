@@ -14,9 +14,9 @@ export const timedEvents = Object.freeze({
 });
 
 export const defaultTimedEvent = {
-  name: "",
-  duration: 0,
-  notificationDuration: 0,
-  soundFileName: "",
-  eventTimeType: EventTimeTypeEnum.Relative
+  name: "New Event",
+  eventTimeType: EventTimeTypeEnum.Relative,
+  duration: 60,
+  notificationDuration: 10,
+  soundFileName: "/sounds/bounty.wav"
 };
