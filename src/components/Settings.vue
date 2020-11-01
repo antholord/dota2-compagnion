@@ -7,7 +7,7 @@
     <div
       class="md-headline event-title"
     >
-      <div style="padding-left:10px;height:42px;">
+      <div>
         Events
       </div>
     </div>
@@ -27,10 +27,10 @@
             </div>
           </md-list-item>
           <md-list-item
-            v-for="event in settings.customEvents"
+            v-for="(event, i) in settings.customEvents"
             :key="event.name"
             @click="updateSelectedEvent(event)"
-            :class="{ selected: event === selectedEvent}"
+            :class="{ selected: event === selectedEvent, error: $v.settings.customEvents.$each[i].$invalid }"
           >
             <span :class="{ selected: event === selectedEvent}">{{ event.name }}</span>
           </md-list-item>
@@ -62,13 +62,15 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { ISettings } from "@/settings";
 import TimerEvent from "./TimerEvent.vue";
 import VolumeSlider from "./VolumeSlider.vue";
-import { defaultTimedEvent, TimedEventModel } from "@/server/model/timed-event-model";
-import { EventTimeTypeEnum } from "@/server/enums/events";
 import ValidationMixin from "../mixins/ValidationMixin";
 import mixins from "vue-typed-mixins";
+import { ISettings } from "@/settings";
+import { DefaultTimedEvent, TimedEventModel, TimedEventModelValidation } from "@/server/model/timed-event-model";
+import { EventTimeTypeEnum } from "@/server/enums/events";
+import { required, between, integer, minLength, maxLength } from "vuelidate/lib/validators";
+
 export default mixins(ValidationMixin).extend({
   name: "Settings",
   components: {
@@ -90,7 +92,7 @@ export default mixins(ValidationMixin).extend({
   },
   methods: {
     addEvent() {
-      this.settings.customEvents.push(Object.assign({}, defaultTimedEvent));
+      this.settings.customEvents.push(Object.assign({}, DefaultTimedEvent));
     },
     updateSelectedEvent(newEvent) {
       if (this.selectedEvent) {
@@ -99,7 +101,23 @@ export default mixins(ValidationMixin).extend({
       this.selectedEvent = newEvent;
     },
     save() {
-      this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("update-settings", this.settings));
+      const valid = this.validate(this);
+      if (valid) {
+        this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("update-settings", this.settings));
+      } else {
+        alert("Fix errors before saving");
+      }
+    }
+  },
+  validations: {
+    settings: {
+      volume: {
+        required,
+        between: between(0, 100)
+      },
+      customEvents: {
+        $each: TimedEventModelValidation
+      }
     }
   }
 });
@@ -114,8 +132,13 @@ export default mixins(ValidationMixin).extend({
 .event-title {
   background-color:black;
   color:white;
-  line-height: 40px;
 }
+.event-title > div {
+  padding-left:10px;
+  height:42px;
+  line-height:42px;
+}
+
 .event-list {
   border: 2px solid black;
   border-right:5px solid black;
@@ -129,6 +152,11 @@ export default mixins(ValidationMixin).extend({
 
 .selected {
   background-color:black;
+  color:white;
+}
+
+.md-list-item.error {
+  background-color:crimson;
   color:white;
 }
 </style>

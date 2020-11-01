@@ -5,34 +5,58 @@
       style="flex-direction:column"
     >
       <div class="md-layout-item">
-        <md-field>
+        <md-field :class="getValidationClass('name')">
           <label for="name">Name</label>
           <md-input
             name="name"
             v-model="model.name"
           />
+          <span
+            class="md-error"
+            v-if="!$v.model.name.required"
+          >
+            Field is required.
+          </span>
         </md-field>
       </div>
       <div
         class="md-layout-item"
       >
-        <md-field style="max-width:200px;">
+        <md-field
+          style="max-width:200px;"
+          :class="getValidationClass('duration')"
+        >
           <label for="duration">Trigger every X seconds</label>
           <md-input
             name="duration"
-            v-model="model.duration"
+            v-model.number="model.duration"
           />
+          <span
+            class="md-error"
+            v-if="!$v.model.duration.between"
+          >
+            Must be a valid duration
+          </span>
         </md-field>
       </div>
       <div
         class="md-layout-item"
       >
-        <md-field style="max-width:200px;">
+        <md-field
+          style="max-width:200px;"
+          :class="getValidationClass('notificationDuration')"
+        >
           <label for="notification">Warning Delay</label>
           <md-input
             name="notification"
-            v-model="model.notificationDuration"
+            v-model.number="model.notificationDuration"
           />
+          <span
+            class="md-error"
+            v-if="!$v.model.notificationDuration.between"
+          >
+            Must be a valid duration
+          </span>
         </md-field>
       </div>
       <div
@@ -83,9 +107,10 @@
 <script lang="ts">
 import Vue from "vue";
 import { ISettings } from "@/settings";
-import { defaultTimedEvent, TimedEventModel } from "@/server/model/timed-event-model";
+import { DefaultTimedEvent, TimedEventModel, TimedEventModelValidation } from "@/server/model/timed-event-model";
 import { EventTimeTypeEnum } from "@/server/enums/events";
 import Multiselect from "vue-multiselect";
+import { required, integer, between, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default Vue.extend({
   name: "TimerEvent",
@@ -96,7 +121,7 @@ export default Vue.extend({
     model: {
       type: Object as () => TimedEventModel,
       default() {
-        return Object.assign({}, defaultTimedEvent);
+        return Object.assign({}, DefaultTimedEvent);
       }
     }
   },
@@ -117,6 +142,15 @@ export default Vue.extend({
     }
   },
   methods: {
+    getValidationClass(fieldName) {
+      const field = this.$v.model[fieldName];
+
+      if (field) {
+        return {
+          "md-invalid": field.$invalid
+        };
+      }
+    },
     playSound(event: any, sound) {
       event.stopPropagation();
       event.preventDefault();
@@ -124,6 +158,9 @@ export default Vue.extend({
       audio.volume = 0.3;
       audio.play();
     }
+  },
+  validations: {
+    model: TimedEventModelValidation
   }
 });
 </script>
