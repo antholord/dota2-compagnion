@@ -1,6 +1,9 @@
+import { ISettings } from "./../../settings";
+import { BrowserWindow, ipcMain } from "electron";
 import { GameStateModel } from "@/server/model/game-state-model";
 import { TimedEventModel } from "@/server/model/timed-event-model";
 import { EventTypeEnum, EventTimeTypeEnum } from "@/server/enums/events";
+import ElectronStore from "@/server/electron-store";
 
 interface RegisteredEvent {
   event: TimedEventModel;
@@ -12,6 +15,7 @@ let gameTime = 0;
 const events: RegisteredEvent[] = [];
 
 let loop: NodeJS.Timeout;
+let window: BrowserWindow | null = null;
 
 function startGame() {
   loop = setInterval(executeEventLoop, 1000);
@@ -78,8 +82,37 @@ function updateState(gameState: GameStateModel): number {
   return gameTime;
 };
 
+const defaultEventCallback = (event: TimedEventModel, eventType: EventTypeEnum): void => {
+  if (eventType === EventTypeEnum.Notification) {
+    console.log(`Event notification '${event.name}' will occur in ${event.notificationDuration}`);
+    window?.webContents.send("game-event-notification", event);
+  } else if (eventType === EventTypeEnum.Expired) {
+    console.log(`Event occurred '${event.name}'`);
+    window?.webContents.send("game-event-trigger", event);
+    if (event.eventTimeType === EventTimeTypeEnum.Relative) {
+      registerEvent(event, defaultEventCallback);
+    }
+  }
+};
+
+function startService(win: BrowserWindow) {
+  window = win;
+  const settings = ElectronStore.store;
+  settings.customEvents.forEach(e => {
+    registerEvent(e, defaultEventCallback);
+  });
+
+  ipcMain.on("update-settings", (e, updatedSettings: ISettings) => {
+    console.log("game-event-service updating settings");
+    events.length = 0;
+    updatedSettings.customEvents.forEach(e => {
+      registerEvent(e, defaultEventCallback);
+    });
+  });
+}
+
 export default {
   getGameTime: () => gameTime,
-  registerEvent,
+  startService,
   updateState
 };

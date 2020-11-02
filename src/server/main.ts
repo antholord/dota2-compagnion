@@ -80,21 +80,9 @@ app.on("ready", async() => {
   // load events from config to service?
   createWindow();
   createHttpServer();
-
-  const eventCallback = (event: TimedEventModel, eventType: EventTypeEnum): void => {
-    if (eventType === EventTypeEnum.Notification) {
-      console.log(`Event notification '${event.name}' will occur in ${event.notificationDuration}`);
-      win?.webContents.send("game-event-notification", event);
-    } else if (eventType === EventTypeEnum.Expired) {
-      console.log(`Event occurred '${event.name}'`);
-      win?.webContents.send("game-event-trigger", event);
-      if (event.eventTimeType === EventTimeTypeEnum.Relative) {
-        GameEventService.registerEvent(event, eventCallback);
-      }
-    }
-  };
-  GameEventService.registerEvent(timedEvents.bounty, eventCallback);
-  GameEventService.registerEvent(timedEvents.outpost, eventCallback);
+  if (win) { // should always be true
+    GameEventService.startService(win);
+  }
 });
 
 // Exit cleanly on request from parent process in development mode.
