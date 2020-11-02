@@ -24,6 +24,8 @@ function startGame() {
 
 function executeEventLoop() {
   events.forEach((timedEvent, i, array) => {
+    if (timedEvent.event.enabled === false) return;
+
     if (gameTime % 10 === 0) {
       console.log(`${timedEvent.event.name} still waiting for ${timedEvent.dueTime}`);
     }

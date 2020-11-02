@@ -123,6 +123,10 @@ export default Vue.extend({
       default() {
         return Object.assign({}, DefaultTimedEvent);
       }
+    },
+    volume: {
+      type: Number,
+      default() { return 0.5; }
     }
   },
   data() {
@@ -155,7 +159,7 @@ export default Vue.extend({
       event.stopPropagation();
       event.preventDefault();
       const audio = new Audio(`/sounds/${sound}`);
-      audio.volume = 0.3;
+      audio.volume = this.volume;
       audio.play();
     }
   },

@@ -15,7 +15,7 @@
       class="md-layout"
     >
       <div
-        class="md-layout-item md-size-30 event-list"
+        class="md-layout-item md-size-35 event-list"
       >
         <md-list style="padding:0px;">
           <md-list-item @click="addEvent">
@@ -32,7 +32,13 @@
             @click="updateSelectedEvent(event)"
             :class="{ selected: event === selectedEvent, error: $v.settings.customEvents.$each[i].$invalid }"
           >
-            <span :class="{ selected: event === selectedEvent}">{{ event.name }}</span>
+            <div>
+              <md-checkbox
+                v-model="event.enabled"
+                title="Toggle this event on/off"
+              />
+              <span :class="{ selected: event === selectedEvent}">{{ event.name }}</span>
+            </div>
           </md-list-item>
         </md-list>
       </div>
@@ -43,6 +49,7 @@
           v-if="selectedEvent"
           :model="selectedEvent"
           :save="save"
+          :volume="settings.volume"
         />
       </div>
     </div>

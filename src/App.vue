@@ -5,7 +5,7 @@
         <pre>{{ gameTime }}</pre>
         <pre>{{ gameNotifications }}</pre>
 
-        <Settings />
+        <Settings ref="settingsComponent" />
       </md-app-content>
     </md-app>
   </div>
@@ -29,7 +29,8 @@ export default Vue.extend({
     this.$electron.ipcRenderer.on("game-event-notification", (event, data: TimedEventModel) => {
       this.gameNotifications = `Event ${data.name} happening in ${data.notificationDuration}`;
       const audio = new Audio(`/sounds/${data.soundFileName}`);
-      audio.volume = 0.5;
+      // this is a hack since no vuex
+      audio.volume = (this.$refs.settingsComponent as any)?.settings?.volume || 0.5;
       audio.play();
     });
     this.$electron.ipcRenderer.on("game-event-trigger", (event, data: TimedEventModel) => {
