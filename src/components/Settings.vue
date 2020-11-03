@@ -17,7 +17,10 @@
       <div
         class="md-layout-item md-size-35 event-list"
       >
-        <md-list style="padding:0px;">
+        <md-list
+          style="padding:0px;"
+          class="md-dense"
+        >
           <md-list-item @click="addEvent">
             <div>
               <md-icon style="margin-top:-3px;padding-right:5px;">
@@ -32,9 +35,10 @@
             @click="updateSelectedEvent(event)"
             :class="{ selected: event === selectedEvent, error: $v.settings.customEvents.$each[i].$invalid }"
           >
-            <div>
+            <div style="display:flex;align-items:center">
               <md-checkbox
                 v-model="event.enabled"
+                class="list-checkbox"
                 title="Toggle this event on/off"
               />
               <span :class="{ selected: event === selectedEvent}">{{ event.name }}</span>
@@ -50,6 +54,7 @@
           :model="selectedEvent"
           :save="save"
           :volume="settings.volume"
+          @delete-event="deleteEvent"
         />
       </div>
     </div>
@@ -100,6 +105,14 @@ export default mixins(ValidationMixin).extend({
   methods: {
     addEvent() {
       this.settings.customEvents.push(Object.assign({}, DefaultTimedEvent));
+    },
+    deleteEvent(model: TimedEventModel) {
+      const response = confirm("Are you sure you want to delete the Event?");
+      const index = this.settings.customEvents.indexOf(model);
+      if (response === true && index > -1) {
+        this.settings.customEvents.splice(index);
+        this.updateSelectedEvent(this.settings.customEvents[0]);
+      }
     },
     updateSelectedEvent(newEvent) {
       if (this.selectedEvent) {
@@ -165,5 +178,12 @@ export default mixins(ValidationMixin).extend({
 .md-list-item.error {
   background-color:crimson;
   color:white;
+}
+.md-list-item {
+  height: 40px;
+}
+
+.list-checkbox {
+  margin: 0px 10px 0px 0px !important;
 }
 </style>

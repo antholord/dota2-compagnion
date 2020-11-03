@@ -100,6 +100,17 @@
           </template>
         </Multiselect>
       </div>
+      <div
+        class="md-layout-item"
+        style="padding-top:10px;"
+      >
+        <md-button
+          class="md-accent md-raised"
+          @click="$emit('delete-event', model)"
+        >
+          DELETE
+        </md-button>
+      </div>
     </div>
   </div>
 </template>
@@ -146,6 +157,9 @@ export default Vue.extend({
     }
   },
   methods: {
+    deleteEvent() {
+      this.$emit("delete-event", this.model);
+    },
     getValidationClass(fieldName) {
       const field = this.$v.model[fieldName];
 

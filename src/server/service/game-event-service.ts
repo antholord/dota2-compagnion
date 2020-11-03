@@ -99,6 +99,7 @@ const defaultEventCallback = (event: TimedEventModel, eventType: EventTypeEnum):
 
 function startService(win: BrowserWindow) {
   window = win;
+  ElectronStore.reset("customEvents");
   const settings = ElectronStore.store;
   settings.customEvents.forEach(e => {
     registerEvent(e, defaultEventCallback);
