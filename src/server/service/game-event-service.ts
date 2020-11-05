@@ -1,4 +1,4 @@
-import { ISettings } from "./../../settings";
+import { ISettings } from "@/settings.ts";
 import { BrowserWindow, ipcMain } from "electron";
 import { GameStateModel } from "@/server/model/game-state-model";
 import { TimedEventModel } from "@/server/model/timed-event-model";
@@ -97,21 +97,24 @@ const defaultEventCallback = (event: TimedEventModel, eventType: EventTypeEnum):
   }
 };
 
+const reloadEvents = () => {
+  console.log("game-event-service updating settings");
+  events.length = 0;
+  ElectronStore.store.customEvents.forEach(e => {
+    registerEvent(e, defaultEventCallback);
+  });
+};
+
 function startService(win: BrowserWindow) {
   window = win;
-  ElectronStore.reset("customEvents");
+  // ElectronStore.reset("customEvents");
   const settings = ElectronStore.store;
   settings.customEvents.forEach(e => {
     registerEvent(e, defaultEventCallback);
   });
 
-  ipcMain.on("update-settings", (e, updatedSettings: ISettings) => {
-    console.log("game-event-service updating settings");
-    events.length = 0;
-    updatedSettings.customEvents.forEach(e => {
-      registerEvent(e, defaultEventCallback);
-    });
-  });
+  ipcMain.on("update-settings", reloadEvents);
+  ipcMain.on("reset-settings", reloadEvents);
 }
 
 export default {

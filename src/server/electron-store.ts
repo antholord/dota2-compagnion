@@ -7,12 +7,17 @@ const store = new Store<ISettings>({
 });
 
 export function setupConfigEvents() {
-  // store.reset("customEvents");
   ipcMain.on("get-settings", (e) => {
     e.returnValue = store.store;
   });
   ipcMain.on("update-settings", (e, settings) => {
     store.store = settings;
+    e.returnValue = store.store;
+  });
+
+  ipcMain.on("reset-settings", (e) => {
+    store.reset("customEvents");
+    store.reset("volume");
     e.returnValue = store.store;
   });
 }

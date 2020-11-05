@@ -10,6 +10,15 @@
       <div>
         Events
       </div>
+      <md-button
+        class="md-icon-button"
+        @click="resetSettings"
+        title="Reset all settings to default"
+      >
+        <md-icon style="color:white;">
+          restore
+        </md-icon>
+      </md-button>
     </div>
     <div
       class="md-layout"
@@ -26,7 +35,7 @@
               <md-icon style="margin-top:-3px;padding-right:5px;">
                 add_alarm
               </md-icon>
-              <span>Add new Event</span>
+              <span style="padding-left:7px;">Add new Event</span>
             </div>
           </md-list-item>
           <md-list-item
@@ -103,8 +112,11 @@ export default mixins(ValidationMixin).extend({
     this.validate(this);
   },
   methods: {
-    addEvent() {
-      this.settings.customEvents.push(Object.assign({}, DefaultTimedEvent));
+    addEvent(): TimedEventModel {
+      const newLength = this.settings.customEvents.push(Object.assign({}, DefaultTimedEvent));
+      const newEvent = this.settings.customEvents[newLength - 1];
+      this.updateSelectedEvent(newEvent);
+      return newEvent;
     },
     deleteEvent(model: TimedEventModel) {
       const response = confirm("Are you sure you want to delete the Event?");
@@ -126,6 +138,13 @@ export default mixins(ValidationMixin).extend({
         this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("update-settings", this.settings));
       } else {
         alert("Fix errors before saving");
+      }
+    },
+    resetSettings() {
+      const response = confirm("Are you sure you want to reset settings to default?");
+      if (response === true) {
+        const newSettings = this.$electron.ipcRenderer.sendSync("reset-settings");
+        location.reload();
       }
     }
   },
@@ -152,6 +171,8 @@ export default mixins(ValidationMixin).extend({
 .event-title {
   background-color:black;
   color:white;
+  display:flex;
+  justify-content: space-between;
 }
 .event-title > div {
   padding-left:10px;
