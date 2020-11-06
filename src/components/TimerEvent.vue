@@ -172,7 +172,7 @@ export default Vue.extend({
     playSound(event: any, sound) {
       event.stopPropagation();
       event.preventDefault();
-      const audio = new Audio(`/sounds/${sound}`);
+      const audio = new Audio(`sounds/${sound}`);
       audio.volume = this.volume;
       audio.play();
     }

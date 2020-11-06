@@ -28,7 +28,7 @@ export default Vue.extend({
   mounted() {
     this.$electron.ipcRenderer.on("game-event-notification", (event, data: TimedEventModel) => {
       this.gameNotifications = `Event ${data.name} happening in ${data.notificationDuration}`;
-      const audio = new Audio(`/sounds/${data.soundFileName}`);
+      const audio = new Audio(`sounds/${data.soundFileName}`);
       // this is a hack since no vuex
       audio.volume = (this.$refs.settingsComponent as any)?.settings?.volume || 0.5;
       audio.play();

@@ -1,7 +1,7 @@
 module.exports = {
   pluginOptions: {
     electronBuilder: {
-      mainProcessFile: "./src/server/main.ts",
+      // mainProcessFile: "src/server/main.ts",
       nodeIntegration: true,
       builderOptions: {
         publish: [

@@ -12,7 +12,7 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "src/server/main.ts",
+  "main": "background.js",
   "dependencies": {
     "@types/vuelidate": "^0.7.13",
     "electron-store": "^6.0.1",
@@ -102,5 +102,9 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elaurendeau/dota2-time-reminder.git"
+  }
 }
