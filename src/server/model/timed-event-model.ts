@@ -18,11 +18,15 @@ export interface TimedEventModel {
 export const DefaultTimedEvent = {
   name: "New Event",
   enabled: true,
+  executionTimeRange: {
+    startTime: 0,
+    endTime: 0
+  } as TimeRange,
   eventTimeType: EventTimeTypeEnum.Relative,
   duration: 60,
   notificationDuration: 10,
   soundFileName: "/sounds/bounty.wav"
-};
+} as TimedEventModel;
 
 export const TimedEventModelValidation = {
   duration: {

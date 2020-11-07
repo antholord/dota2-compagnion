@@ -46,7 +46,26 @@ function registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventMod
 
   // When we don't have an executionTimeRange, the event will always be registered
   // When the executionTimeRange exists, the event time must be between the range
-  if (event.executionTimeRange == null || (event.executionTimeRange.startTime < eventTime && event.executionTimeRange.endTime > eventTime)) {
+
+  // start == 0 && end == 0
+  // min = 0
+  // max = 0
+
+  // start < event && end == 0
+  // min = 100
+  // max = 0
+
+  //  start < event > end
+  // min = 0
+  // max = 100
+
+  //  start < event > end
+  // min = 100
+  // max = 200
+  if (
+    (event.executionTimeRange.endTime === 0 && event.executionTimeRange.startTime === 0) ||
+    (event.executionTimeRange.endTime === 0 && event.executionTimeRange.startTime < eventTime) ||
+    (event.executionTimeRange.startTime < eventTime && event.executionTimeRange.endTime > eventTime)) {
     events.push({ event: event, dueTime: eventTime, callbackFunction: callback });
   }
 };

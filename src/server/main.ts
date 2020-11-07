@@ -4,7 +4,7 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { GameStateModel } from "@/server/model/game-state-model";
 import GameEventService from "./service/game-event-service";
-import { TimedEventModel, timedEvents } from "@/server/model/timed-event-model";
+import { TimedEventModel} from "@/server/model/timed-event-model";
 import { EventTimeTypeEnum, EventTypeEnum } from "@/server/enums/events";
 import ElectronStore, { setupConfigEvents } from "@/server/electron-store";
 

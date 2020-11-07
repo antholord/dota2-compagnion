@@ -2,7 +2,7 @@
   <div>
     <div
       class="md-layout md-gutter"
-      style="flex-direction:column"
+      style="flex-direction: column"
     >
       <div class="md-layout-item">
         <md-field :class="getValidationClass('name')">
@@ -19,11 +19,9 @@
           </span>
         </md-field>
       </div>
-      <div
-        class="md-layout-item"
-      >
+      <div class="md-layout-item">
         <md-field
-          style="max-width:200px;"
+          style="max-width: 200px"
           :class="getValidationClass('duration')"
         >
           <label for="duration">Trigger every X seconds</label>
@@ -39,11 +37,9 @@
           </span>
         </md-field>
       </div>
-      <div
-        class="md-layout-item"
-      >
+      <div class="md-layout-item">
         <md-field
-          style="max-width:200px;"
+          style="max-width: 200px"
           :class="getValidationClass('notificationDuration')"
         >
           <label for="notification">Warning Delay</label>
@@ -60,38 +56,48 @@
         </md-field>
       </div>
 
-      <div class="md-layout-item" >
+      <div class="md-layout-item">
         <label for="minimum-executionTimeRange">Event activation time range</label>
         <md-field
-          style="max-width:200px;"
-          :class="getValidationClass('executionTimeRange')"
+          style="max-width: 200px"
+          :class="{
+            'md-invalid': !$v.minimumTimeRange.validTime,
+          }"
         >
           <label for="minimum-executionTimeRange">Minimum game time</label>
           <md-input
             name="minimum-executionTimeRange"
-            v-model.number="model.executionTimeRange.startTime"
+            v-model="minimumTimeRange"
           />
 
-          <span class="md-error" v-if="!$v.model.notificationDuration.between">
+          <span
+            class="md-error"
+            v-if="!$v.model.notificationDuration.between"
+          >
             Must be a valid duration
           </span>
         </md-field>
         <md-field
-          style="max-width:200px;"
-          :class="getValidationClass('executionTimeRange')"
+          style="max-width: 200px"
+          :class="{
+            'md-invalid': !$v.maximumTimeRange.validTime,
+          }"
         >
           <label for="maximum-executionTimeRange">Maximum game time</label>
           <md-input
             name="maximum-executionTimeRange"
-            v-model.number="model.executionTimeRange.endTime"
+            v-model="maximumTimeRange"
           />
 
-          <span class="md-error" v-if="!$v.model.notificationDuration.between">
+          <span
+            class="md-error"
+            v-if="!$v.model.notificationDuration.between"
+          >
             Must be a valid duration
           </span>
         </md-field>
       </div>
-      <div class="md-layout-item" >
+      <div class="md-layout-item">
         <label for="select"><h4>Trigger Sound</h4></label>
         <Multiselect
           name="select"
@@ -100,13 +106,15 @@
           :options-limit="3000"
           select-label=""
           placeholder="Select Sound"
-          style="max-width:400px;"
+          style="max-width: 400px"
         >
           <template
             slot="singleLabel"
             slot-scope="props"
           >
-            <span class="option__desc"><span class="option__title">{{ props.option }}</span></span>
+            <span
+              class="option__desc"
+            ><span class="option__title">{{ props.option }}</span></span>
           </template>
           <template
             slot="option"
@@ -115,12 +123,12 @@
             <div class="option__desc">
               <span class="option__title">{{ props.option }}</span>
               <div
-                style="display:inline-block"
+                style="display: inline-block"
                 @click="playSound($event, props.option)"
               >
                 <md-icon
                   @click="playSound($event, props.option)"
-                  style="padding-left:10px;color:green;"
+                  style="padding-left: 10px; color: green"
                   class="md-size-2x"
                 >
                   play_arrow
@@ -132,7 +140,7 @@
       </div>
       <div
         class="md-layout-item"
-        style="padding-top:10px;"
+        style="padding-top: 10px"
       >
         <md-button
           class="md-accent md-raised"
@@ -148,10 +156,21 @@
 <script lang="ts">
 import Vue from "vue";
 import { ISettings } from "@/settings";
-import { DefaultTimedEvent, TimedEventModel, TimedEventModelValidation } from "@/server/model/timed-event-model";
+import {
+  DefaultTimedEvent,
+  TimedEventModel,
+  TimedEventModelValidation
+} from "@/server/model/timed-event-model";
 import { EventTimeTypeEnum } from "@/server/enums/events";
+import { getTimeInSeconds, getFormattedTime, validateFormattedTime } from "@/server/utils/TimeUtils";
 import Multiselect from "vue-multiselect";
-import { required, integer, between, minLength, maxLength } from "vuelidate/lib/validators";
+import {
+  required,
+  integer,
+  between,
+  minLength,
+  maxLength
+} from "vuelidate/lib/validators";
 
 export default Vue.extend({
   name: "TimerEvent",
@@ -167,31 +186,45 @@ export default Vue.extend({
     },
     volume: {
       type: Number,
-      default() { return 0.5; }
+      default() {
+        return 0.5;
+      }
     }
   },
   data() {
     return {
-      sounds: [] as string[]
+      sounds: [] as string[],
+      minimumTimeRange: "00:00:00" as string,
+      maximumTimeRange: "00:00:00" as string
     };
   },
   async created() {
-    this.sounds = require.context("@/../public/", true, /\.wav$/).keys().map(key => key.substring("./sounds/".length, key.length));
-  },
-  mounted() {
+    this.sounds = require
+      .context("@/../public/", true, /\.wav$/)
+      .keys()
+      .map((key) => key.substring("./sounds/".length, key.length));
 
+    this.minimumTimeRange = getFormattedTime(this.model.executionTimeRange.startTime);
+    this.maximumTimeRange = getFormattedTime(this.model.executionTimeRange.endTime);
+  },
+  mounted() {},
+  watch: {
+    minimumTimeRange: function(newVal, oldVal) {
+      if (validateFormattedTime(newVal)) {
+        this.model.executionTimeRange.startTime = getTimeInSeconds(newVal);
+      }
+    },
+    maximumTimeRange: function(newVal, oldVal) {
+      if (validateFormattedTime(newVal)) {
+        this.model.executionTimeRange.endTime = getTimeInSeconds(newVal);
+      }
+    }
   },
   computed: {
-    soundLabels: function() : string[] {
-      return this.sounds.map(sound => sound.substring(0, sound.lastIndexOf("/") + 1));
-    },
-    minimumTimeRange: {
-      get(): string {
-        return "00:00";
-      },
-      set(value: string): void {
-        this.model.executionTimeRange.endTime = 0;
-      }
+    soundLabels: function(): string[] {
+      return this.sounds.map((sound) =>
+        sound.substring(0, sound.lastIndexOf("/") + 1)
+      );
     }
   },
   methods: {
@@ -216,12 +249,46 @@ export default Vue.extend({
     }
   },
   validations: {
-    model: TimedEventModelValidation
+    minimumTimeRange: {
+      validTime: validateFormattedTime
+    },
+    maximumTimeRange: {
+      validTime: (value) => {
+        return validateFormattedTime(value);
+      }
+    },
+    model: {
+      duration: {
+        required,
+        integer,
+        between: between(1, 999999)
+      },
+      notificationDuration: {
+        required,
+        integer,
+        between: between(0, 999999)
+      },
+      name: {
+        required,
+        maxLength: maxLength(100)
+      },
+      executionTimeRange: {
+        startTime: {
+          validTime: (value) => {
+            return value >= 0;
+          }
+        },
+        endTime: {
+          validTime: (value) => {
+            return value >= 0;
+          }
+        }
+      }
+    }
   }
 });
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-<style>
-
-</style>
+  <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+  <style>
+  </style>

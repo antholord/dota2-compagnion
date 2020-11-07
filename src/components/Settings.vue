@@ -57,6 +57,7 @@
       </div>
       <div class="md-layout-item event-container">
         <TimerEvent
+          :key="selectedIndex"
           v-if="selectedEvent"
           :model="selectedEvent"
           :save="save"
@@ -65,7 +66,10 @@
         />
       </div>
     </div>
-    <div class="md-layout md-alignment-center-right" style="padding-top:10px;" >
+    <div
+      class="md-layout md-alignment-center-right"
+      style="padding-top:10px;"
+    >
       <md-button
         class="md-dense md-raised md-primary"
         @click="save"
@@ -94,7 +98,7 @@ export default mixins(ValidationMixin).extend({
     VolumeSlider
   },
   data() {
-    return { settings: {} as ISettings, selectedEvent: null as TimedEventModel | null };
+    return { settings: {} as ISettings, selectedEvent: null as TimedEventModel | null, selectedIndex: 0 as number };
   },
   created() {
     this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("get-settings"));
@@ -126,11 +130,14 @@ export default mixins(ValidationMixin).extend({
         // save old event
       }
       this.selectedEvent = newEvent;
+      this.selectedIndex = this.settings.customEvents.indexOf(newEvent);
     },
     save() {
       const valid = this.validate(this);
       if (valid) {
+        // this.selectedIndex = this.settings.customEvents.indexOf(newEvent);
         this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("update-settings", this.settings));
+        this.updateSelectedEvent(this.settings.customEvents[this.selectedIndex]);
       } else {
         alert("Fix errors before saving");
       }
