@@ -1,19 +1,19 @@
 import { EventTimeTypeEnum } from "@/server/enums/events";
 import { between, maxLength, minLength, required, integer } from "vuelidate/lib/validators";
 
+export interface TimeRange {
+  startTime: number,
+  endTime: number
+}
 export interface TimedEventModel {
   enabled: boolean,
   duration: number;
+  executionTimeRange: TimeRange;
   notificationDuration: number;
   name: string;
   eventTimeType: EventTimeTypeEnum;
   soundFileName: string;
 }
-
-export const timedEvents = Object.freeze({
-  bounty: { enabled: true, duration: 600, notificationDuration: 12, name: "Bounty Runes", eventTimeType: EventTimeTypeEnum.Relative, soundFileName: "bounty.wav" } as TimedEventModel,
-  outpost: { enabled: true, duration: 600, notificationDuration: 45, name: "Shrines exp event", eventTimeType: EventTimeTypeEnum.Relative, soundFileName: "outpost.wav" } as TimedEventModel
-});
 
 export const DefaultTimedEvent = {
   name: "New Event",

@@ -59,9 +59,39 @@
           </span>
         </md-field>
       </div>
-      <div
-        class="md-layout-item"
-      >
+
+      <div class="md-layout-item" >
+        <label for="minimum-executionTimeRange">Event activation time range</label>
+        <md-field
+          style="max-width:200px;"
+          :class="getValidationClass('executionTimeRange')"
+        >
+          <label for="minimum-executionTimeRange">Minimum game time</label>
+          <md-input
+            name="minimum-executionTimeRange"
+            v-model.number="model.executionTimeRange.startTime"
+          />
+
+          <span class="md-error" v-if="!$v.model.notificationDuration.between">
+            Must be a valid duration
+          </span>
+        </md-field>
+        <md-field
+          style="max-width:200px;"
+          :class="getValidationClass('executionTimeRange')"
+        >
+          <label for="maximum-executionTimeRange">Maximum game time</label>
+          <md-input
+            name="maximum-executionTimeRange"
+            v-model.number="model.executionTimeRange.endTime"
+          />
+
+          <span class="md-error" v-if="!$v.model.notificationDuration.between">
+            Must be a valid duration
+          </span>
+        </md-field>
+      </div>
+      <div class="md-layout-item" >
         <label for="select"><h4>Trigger Sound</h4></label>
         <Multiselect
           name="select"
@@ -154,6 +184,14 @@ export default Vue.extend({
   computed: {
     soundLabels: function() : string[] {
       return this.sounds.map(sound => sound.substring(0, sound.lastIndexOf("/") + 1));
+    },
+    minimumTimeRange: {
+      get(): string {
+        return "00:00";
+      },
+      set(value: string): void {
+        this.model.executionTimeRange.endTime = 0;
+      }
     }
   },
   methods: {

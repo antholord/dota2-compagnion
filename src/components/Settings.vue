@@ -55,9 +55,7 @@
           </md-list-item>
         </md-list>
       </div>
-      <div
-        class="md-layout-item event-container"
-      >
+      <div class="md-layout-item event-container">
         <TimerEvent
           v-if="selectedEvent"
           :model="selectedEvent"
@@ -67,10 +65,7 @@
         />
       </div>
     </div>
-    <div
-      class="md-layout md-alignment-center-right"
-      style="padding-top:10px;"
-    >
+    <div class="md-layout md-alignment-center-right" style="padding-top:10px;" >
       <md-button
         class="md-dense md-raised md-primary"
         @click="save"

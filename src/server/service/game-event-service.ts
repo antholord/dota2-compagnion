@@ -42,9 +42,13 @@ function executeEventLoop() {
 
 function registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel, eventType: EventTypeEnum) => any) {
   const eventTime = event.eventTimeType === EventTimeTypeEnum.Relative ? getRelativeTime(event.duration, gameTime) : getAbsoluteTime(event.duration, gameTime);
-
   console.log(`Registering ${event.name} occurring at ${eventTime}`);
-  events.push({ event: event, dueTime: eventTime, callbackFunction: callback });
+
+  // When we don't have an executionTimeRange, the event will always be registered
+  // When the executionTimeRange exists, the event time must be between the range
+  if (event.executionTimeRange == null || (event.executionTimeRange.startTime < eventTime && event.executionTimeRange.endTime > eventTime)) {
+    events.push({ event: event, dueTime: eventTime, callbackFunction: callback });
+  }
 };
 
 function getRelativeTime(eventTime: number, currentTime: number) {
