@@ -1,0 +1,31 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "electron:debug",
+			"label": "electron:debug",
+			"detail": "vue-cli-service electron:serve --debug",
+			"isBackground": true,
+			"problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "_____"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^.+Starting development server.+$",
+                    "endsPattern": "^.+Learn more about debugging the main process at.+$"
+                },
+			}
+		},
+		{
+			"label": "end serve",
+			"type": "process",
+			"command":[
+			   "${command:workbench.action.tasks.terminate}",
+			   "${command:workbench.action.acceptSelectedQuickOpenItem}",
+			],
+		 },
+	]
+}
