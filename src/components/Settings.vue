@@ -40,9 +40,9 @@
           </md-list-item>
           <md-list-item
             v-for="(event, i) in settings.customEvents"
-            :key="event.name"
+            :key="event.name + timerEventValidityArray[i]"
             @click="updateSelectedEvent(event)"
-            :class="{ selected: event === selectedEvent, error: $v.settings.customEvents.$each[i].$invalid }"
+            :class="{ selected: event === selectedEvent, error: timerEventValidityArray[i] === false }"
           >
             <div style="display:flex;align-items:center">
               <md-checkbox
@@ -63,6 +63,7 @@
           :save="save"
           :volume="settings.volume"
           @delete-event="deleteEvent"
+          @timer-event-valid="updateTimerEventValid"
         />
       </div>
     </div>
@@ -87,7 +88,7 @@ import VolumeSlider from "./VolumeSlider.vue";
 import ValidationMixin from "../mixins/ValidationMixin";
 import mixins from "vue-typed-mixins";
 import { ISettings } from "@/settings";
-import { DefaultTimedEvent, TimedEventModel, TimedEventModelValidation } from "@/server/model/timed-event-model";
+import { DefaultTimedEvent, TimedEventModel } from "@/server/model/timed-event-model";
 import { EventTimeTypeEnum } from "@/server/enums/events";
 import { required, between, integer, minLength, maxLength } from "vuelidate/lib/validators";
 
@@ -98,7 +99,12 @@ export default mixins(ValidationMixin).extend({
     VolumeSlider
   },
   data() {
-    return { settings: {} as ISettings, selectedEvent: null as TimedEventModel | null, selectedIndex: 0 as number };
+    return {
+      settings: {} as ISettings,
+      selectedEvent: null as TimedEventModel | null,
+      selectedIndex: 0 as number,
+      timerEventValidityArray: [] as boolean[]
+    };
   },
   created() {
     this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("get-settings"));
@@ -135,7 +141,6 @@ export default mixins(ValidationMixin).extend({
     save() {
       const valid = this.validate(this);
       if (valid) {
-        // this.selectedIndex = this.settings.customEvents.indexOf(newEvent);
         this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("update-settings", this.settings));
         this.updateSelectedEvent(this.settings.customEvents[this.selectedIndex]);
       } else {
@@ -148,6 +153,9 @@ export default mixins(ValidationMixin).extend({
         const newSettings = this.$electron.ipcRenderer.sendSync("reset-settings");
         location.reload();
       }
+    },
+    updateTimerEventValid(valid: boolean) {
+      this.$set(this.timerEventValidityArray, this.selectedIndex, valid);
     }
   },
   validations: {
@@ -155,9 +163,6 @@ export default mixins(ValidationMixin).extend({
       volume: {
         required,
         between: between(0, 100)
-      },
-      customEvents: {
-        $each: TimedEventModelValidation
       }
     }
   }
@@ -199,8 +204,8 @@ export default mixins(ValidationMixin).extend({
 }
 
 .md-list-item.error {
-  background-color:crimson;
-  color:white;
+  background-color:crimson !important;
+  color:white !important;
 }
 .md-list-item {
   height: 40px;

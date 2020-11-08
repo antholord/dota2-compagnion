@@ -60,9 +60,7 @@
         <label for="minimum-executionTimeRange">Event activation time range</label>
         <md-field
           style="max-width: 200px"
-          :class="{
-            'md-invalid': !$v.minimumTimeRange.validTime,
-          }"
+          :class="{ 'md-invalid': !$v.minimumTimeRange.validTime }"
         >
           <label for="minimum-executionTimeRange">Minimum game time</label>
           <md-input
@@ -79,9 +77,7 @@
         </md-field>
         <md-field
           style="max-width: 200px"
-          :class="{
-            'md-invalid': !$v.maximumTimeRange.validTime,
-          }"
+          :class="{ 'md-invalid': !$v.maximumTimeRange.validTime }"
         >
           <label for="maximum-executionTimeRange">Maximum game time</label>
           <md-input
@@ -98,45 +94,10 @@
         </md-field>
       </div>
       <div class="md-layout-item">
-        <label for="select"><h4>Trigger Sound</h4></label>
-        <Multiselect
-          name="select"
-          v-model="model.soundFileName"
-          :options="sounds"
-          :options-limit="3000"
-          select-label=""
-          placeholder="Select Sound"
-          style="max-width: 400px"
-        >
-          <template
-            slot="singleLabel"
-            slot-scope="props"
-          >
-            <span
-              class="option__desc"
-            ><span class="option__title">{{ props.option }}</span></span>
-          </template>
-          <template
-            slot="option"
-            slot-scope="props"
-          >
-            <div class="option__desc">
-              <span class="option__title">{{ props.option }}</span>
-              <div
-                style="display: inline-block"
-                @click="playSound($event, props.option)"
-              >
-                <md-icon
-                  @click="playSound($event, props.option)"
-                  style="padding-left: 10px; color: green"
-                  class="md-size-2x"
-                >
-                  play_arrow
-                </md-icon>
-              </div>
-            </div>
-          </template>
-        </Multiselect>
+        <SoundPicker
+          :sound-file-name="model.soundFileName"
+          @sound-file-name-changed="soundFileNameChanged"
+        />
       </div>
       <div
         class="md-layout-item"
@@ -158,12 +119,11 @@ import Vue from "vue";
 import { ISettings } from "@/settings";
 import {
   DefaultTimedEvent,
-  TimedEventModel,
-  TimedEventModelValidation
+  TimedEventModel
 } from "@/server/model/timed-event-model";
 import { EventTimeTypeEnum } from "@/server/enums/events";
 import { getTimeInSeconds, getFormattedTime, validateFormattedTime } from "@/server/utils/TimeUtils";
-import Multiselect from "vue-multiselect";
+import SoundPicker from "./SoundPicker.vue";
 import {
   required,
   integer,
@@ -175,7 +135,7 @@ import {
 export default Vue.extend({
   name: "TimerEvent",
   components: {
-    Multiselect
+    SoundPicker
   },
   props: {
     model: {
@@ -199,11 +159,6 @@ export default Vue.extend({
     };
   },
   async created() {
-    this.sounds = require
-      .context("@/../public/", true, /\.wav$/)
-      .keys()
-      .map((key) => key.substring("./sounds/".length, key.length));
-
     this.minimumTimeRange = getFormattedTime(this.model.executionTimeRange.startTime);
     this.maximumTimeRange = getFormattedTime(this.model.executionTimeRange.endTime);
   },
@@ -218,13 +173,18 @@ export default Vue.extend({
       if (validateFormattedTime(newVal)) {
         this.model.executionTimeRange.endTime = getTimeInSeconds(newVal);
       }
+    },
+    valid: function(newVal, oldVal) {
+      if (newVal === true) {
+        this.$emit("timer-event-valid", true);
+      } else {
+        this.$emit("timer-event-valid", false);
+      }
     }
   },
   computed: {
-    soundLabels: function(): string[] {
-      return this.sounds.map((sound) =>
-        sound.substring(0, sound.lastIndexOf("/") + 1)
-      );
+    valid: function(): boolean {
+      return !this.$v.$invalid;
     }
   },
   methods: {
@@ -246,6 +206,9 @@ export default Vue.extend({
       const audio = new Audio(`sounds/${sound}`);
       audio.volume = this.volume;
       audio.play();
+    },
+    soundFileNameChanged(value) {
+      this.model.soundFileName = value;
     }
   },
   validations: {

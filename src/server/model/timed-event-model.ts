@@ -27,20 +27,3 @@ export const DefaultTimedEvent = {
   notificationDuration: 10,
   soundFileName: "/sounds/bounty.wav"
 } as TimedEventModel;
-
-export const TimedEventModelValidation = {
-  duration: {
-    required,
-    integer,
-    between: between(1, 999999)
-  },
-  notificationDuration: {
-    required,
-    integer,
-    between: between(0, 999999)
-  },
-  name: {
-    required,
-    maxLength: maxLength(100)
-  }
-};
