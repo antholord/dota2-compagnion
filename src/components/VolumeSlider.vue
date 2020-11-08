@@ -1,5 +1,5 @@
 <template>
-  <div
+<div
     class="md-layout volume-layout"
   >
     <div
