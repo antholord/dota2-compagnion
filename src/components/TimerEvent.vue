@@ -21,7 +21,7 @@
       </div>
       <div class="md-layout-item">
         <md-field
-          style="max-width: 200px"
+          style="max-width: 140px"
           :class="getValidationClass('duration')"
         >
           <label for="duration">Trigger every X seconds</label>
@@ -39,7 +39,7 @@
       </div>
       <div class="md-layout-item">
         <md-field
-          style="max-width: 200px"
+          style="max-width: 90px"
           :class="getValidationClass('notificationDuration')"
         >
           <label for="notification">Warning Delay</label>
@@ -57,41 +57,44 @@
       </div>
 
       <div class="md-layout-item">
-        <label for="minimum-executionTimeRange">Event activation time range</label>
-        <md-field
-          style="max-width: 200px"
-          :class="{ 'md-invalid': !$v.minimumTimeRange.validTime }"
-        >
-          <label for="minimum-executionTimeRange">Minimum game time</label>
-          <md-input
-            name="minimum-executionTimeRange"
-            v-model="minimumTimeRange"
-          />
-
-          <span
-            class="md-error"
-            v-if="!$v.model.notificationDuration.between"
+        <h3>Event activation time range</h3>
+        <div style="display:flex;">
+          <md-field
+            style="max-width: 70px; margin-right:40px;"
+            :class="{ 'md-invalid': !$v.minimumTimeRange.validTime }"
           >
-            Must be a valid duration
-          </span>
-        </md-field>
-        <md-field
-          style="max-width: 200px"
-          :class="{ 'md-invalid': !$v.maximumTimeRange.validTime }"
-        >
-          <label for="maximum-executionTimeRange">Maximum game time</label>
-          <md-input
-            name="maximum-executionTimeRange"
-            v-model="maximumTimeRange"
-          />
+            <label for="minimum-executionTimeRange">Start</label>
+            <md-input
+              name="minimum-executionTimeRange"
+              v-model="minimumTimeRange"
+            />
 
-          <span
-            class="md-error"
-            v-if="!$v.model.notificationDuration.between"
+            <span
+              class="md-error"
+              v-if="!$v.model.notificationDuration.between"
+            >
+              Must be a valid duration
+            </span>
+          </md-field>
+
+          <md-field
+            style="max-width: 70px;"
+            :class="{ 'md-invalid': !$v.maximumTimeRange.validTime }"
           >
-            Must be a valid duration
-          </span>
-        </md-field>
+            <label for="maximum-executionTimeRange">End</label>
+            <md-input
+              name="maximum-executionTimeRange"
+              v-model="maximumTimeRange"
+            />
+
+            <span
+              class="md-error"
+              v-if="!$v.model.notificationDuration.between"
+            >
+              Must be a valid duration
+            </span>
+          </md-field>
+        </div>
       </div>
       <div class="md-layout-item">
         <SoundPicker
