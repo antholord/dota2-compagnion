@@ -7,9 +7,14 @@
       @input="soundFileNameChanged"
       :options="sounds"
       :options-limit="3000"
+      @open="loadSounds"
+      :loading="loading"
+      :allow-empty="false"
+      deselect-label=""
       select-label=""
+      :option-height="30"
       placeholder="Select Sound"
-      style="max-width: 400px"
+      style="max-width: 600px"
     >
       <template
         slot="singleLabel"
@@ -32,7 +37,6 @@
             <md-icon
               @click="playSound($event, props.option)"
               style="padding-left: 10px; color: green"
-              class="md-size-2x"
             >
               play_arrow
             </md-icon>
@@ -65,7 +69,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      sounds
+      sounds: [] as string[],
+      loading: false
     };
   },
   props: {
@@ -78,8 +83,18 @@ export default Vue.extend({
       default: DefaultTimedEvent.soundFileName
     }
   },
+  created() {
+    this.sounds.push(this.soundFileName);
+  },
   mounted() {},
   methods: {
+    loadSounds() {
+      if (this.sounds.length > 1) return;
+      this.loading = true;
+      this.sounds.splice(0);
+      this.$set(this, "sounds", sounds);
+      this.loading = false;
+    },
     soundFileNameChanged(value) {
       this.$emit("sound-file-name-changed", value);
     },
