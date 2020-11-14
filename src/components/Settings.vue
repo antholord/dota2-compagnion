@@ -39,10 +39,10 @@
             </div>
           </md-list-item>
           <md-list-item
-            v-for="(event, i) in settings.customEvents"
-            :key="event.name + timerEventValidityArray[i]"
+            v-for="(event) in settings.customEvents"
+            :key="event.name"
             @click="updateSelectedEvent(event)"
-            :class="{ selected: event === selectedEvent, error: timerEventValidityArray[i] === false }"
+            :class="{ selected: event === selectedEvent }"
           >
             <div style="display:flex;align-items:center">
               <md-checkbox
@@ -57,13 +57,13 @@
       </div>
       <div class="md-layout-item event-container">
         <TimerEvent
+          ref="selectedEventComponent"
           :key="selectedIndex"
           v-if="selectedEvent"
           :model="selectedEvent"
           :save="save"
           :volume="settings.volume"
           @delete-event="deleteEvent"
-          @timer-event-valid="updateTimerEventValid"
         />
       </div>
     </div>
@@ -102,8 +102,7 @@ export default mixins(ValidationMixin).extend({
     return {
       settings: {} as ISettings,
       selectedEvent: null as TimedEventModel | null,
-      selectedIndex: 0 as number,
-      timerEventValidityArray: [] as boolean[]
+      selectedIndex: 0 as number
     };
   },
   created() {
@@ -133,6 +132,13 @@ export default mixins(ValidationMixin).extend({
     },
     updateSelectedEvent(newEvent) {
       if (this.selectedEvent) {
+        const invalid = (this.$refs.selectedEventComponent as any).$v.$invalid;
+        if (invalid === true) {
+          const response = window.confirm("You have invalid changes for this Timer Event. Revert to last saved settings?");
+          if (response === true) {
+            (this.$refs.selectedEventComponent as any).reset();
+          } else return;
+        }
         // save old event
       }
       this.selectedEvent = newEvent;
@@ -153,9 +159,6 @@ export default mixins(ValidationMixin).extend({
         const newSettings = this.$electron.ipcRenderer.sendSync("reset-settings");
         location.reload();
       }
-    },
-    updateTimerEventValid(valid: boolean) {
-      this.$set(this.timerEventValidityArray, this.selectedIndex, valid);
     }
   },
   validations: {
@@ -181,6 +184,7 @@ export default mixins(ValidationMixin).extend({
   display:flex;
   justify-content: space-between;
 }
+
 .event-title > div {
   padding-left:10px;
   height:42px;

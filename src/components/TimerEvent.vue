@@ -157,15 +157,16 @@ export default Vue.extend({
   data() {
     return {
       sounds: [] as string[],
+      originalModelCopy: {} as TimedEventModel,
       minimumTimeRange: "00:00:00" as string,
       maximumTimeRange: "00:00:00" as string
     };
   },
-  async created() {
+  created() {
+    this.originalModelCopy = Object.assign({}, this.model);
     this.minimumTimeRange = getFormattedTime(this.model.executionTimeRange.startTime);
     this.maximumTimeRange = getFormattedTime(this.model.executionTimeRange.endTime);
   },
-  mounted() {},
   watch: {
     minimumTimeRange: function(newVal, oldVal) {
       if (validateFormattedTime(newVal)) {
@@ -176,13 +177,6 @@ export default Vue.extend({
       if (validateFormattedTime(newVal)) {
         this.model.executionTimeRange.endTime = getTimeInSeconds(newVal);
       }
-    },
-    valid: function(newVal, oldVal) {
-      if (newVal === true) {
-        this.$emit("timer-event-valid", true);
-      } else {
-        this.$emit("timer-event-valid", false);
-      }
     }
   },
   computed: {
@@ -191,6 +185,12 @@ export default Vue.extend({
     }
   },
   methods: {
+    reset() {
+      // re-assign default values in a way that works nice with Vue's reactive system
+      for (const [key, value] of Object.entries(this.originalModelCopy)) {
+        this.$set(this.model, key, value);
+      }
+    },
     deleteEvent() {
       this.$emit("delete-event", this.model);
     },

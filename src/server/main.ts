@@ -4,7 +4,7 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { GameStateModel } from "@/server/model/game-state-model";
 import GameEventService from "./service/game-event-service";
-import { TimedEventModel} from "@/server/model/timed-event-model";
+import { TimedEventModel } from "@/server/model/timed-event-model";
 import { EventTimeTypeEnum, EventTypeEnum } from "@/server/enums/events";
 import ElectronStore, { setupConfigEvents } from "@/server/electron-store";
 
@@ -35,7 +35,7 @@ function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
-    if (!process.env.IS_TEST) win.webContents.openDevTools();
+    if (!process.env.IS_TEST) win.webContents.openDevTools({ mode: "detach" });
   } else {
     createProtocol("app");
     // Load the index.html when not in development
