@@ -7,12 +7,14 @@ import GameEventService from "./service/game-event-service";
 import { TimedEventModel } from "@/server/model/timed-event-model";
 import { EventTimeTypeEnum, EventTypeEnum } from "@/server/enums/events";
 import ElectronStore, { setupConfigEvents } from "@/server/electron-store";
+import OverlayWindow from "./windows/overlay-window";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win: BrowserWindow | null;
+let overlay: BrowserWindow | null;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -35,7 +37,7 @@ function createWindow() {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
-    if (!process.env.IS_TEST) win.webContents.openDevTools({ mode: "detach" });
+    // if (!process.env.IS_TEST) win.webContents.openDevTools({ mode: "detach" });
   } else {
     createProtocol("app");
     // Load the index.html when not in development
@@ -44,6 +46,8 @@ function createWindow() {
 
   win.on("closed", () => {
     win = null;
+    // temp
+    overlay = null;
   });
 }
 
@@ -80,8 +84,9 @@ app.on("ready", async() => {
   // load events from config to service?
   createWindow();
   createHttpServer();
-  if (win) { // should always be true
-    GameEventService.startService(win);
+  overlay = OverlayWindow.createWindow();
+  if (overlay) { // should always be true
+    GameEventService.startService(overlay);
   }
 });
 
@@ -110,8 +115,9 @@ export function createHttpServer() {
     });
     req.on("end", () => {
       const state = JSON.parse(data as any) as GameStateModel;
+      console.log(state);
       const time = GameEventService.updateState(state);
-      win?.webContents.send("game-time", time);
+      overlay?.webContents.send("game-time", time);
     });
   });
   server.listen(4000);

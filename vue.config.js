@@ -1,8 +1,8 @@
 module.exports = {
   pluginOptions: {
     electronBuilder: {
-      // mainProcessFile: "src/server/main.ts",
       nodeIntegration: true,
+      externals: ["node-window-manager"],
       builderOptions: {
         publish: [
           "github"
