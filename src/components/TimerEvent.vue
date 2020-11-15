@@ -57,8 +57,20 @@
       </div>
 
       <div class="md-layout-item">
-        <h3>Event activation time range</h3>
         <div style="display:flex;">
+          <md-checkbox
+            v-model="enableTimeRange"
+            @change="enableTimeRangeChanged"
+          />
+          <span
+            class="md-subheading"
+            style="line-height:52px;"
+          >Event activation time range</span>
+        </div>
+        <div
+          v-if="enableTimeRange === true"
+          style="display:flex;"
+        >
           <md-field
             style="max-width: 70px; margin-right:40px;"
             :class="{ 'md-invalid': !$v.minimumTimeRange.validTime }"
@@ -159,10 +171,14 @@ export default Vue.extend({
       sounds: [] as string[],
       originalModelCopy: {} as TimedEventModel,
       minimumTimeRange: "00:00:00" as string,
-      maximumTimeRange: "00:00:00" as string
+      maximumTimeRange: "00:00:00" as string,
+      enableTimeRange: false
     };
   },
   created() {
+    if (this.model.executionTimeRange.startTime !== 0 || this.model.executionTimeRange.endTime !== 0) {
+      this.enableTimeRange = true;
+    }
     this.originalModelCopy = Object.assign({}, this.model);
     this.minimumTimeRange = getFormattedTime(this.model.executionTimeRange.startTime);
     this.maximumTimeRange = getFormattedTime(this.model.executionTimeRange.endTime);
@@ -185,6 +201,12 @@ export default Vue.extend({
     }
   },
   methods: {
+    enableTimeRangeChanged(value) {
+      if (value === false) {
+        this.minimumTimeRange = "00:00:00";
+        this.maximumTimeRange = "00:00:00";
+      }
+    },
     reset() {
       // re-assign default values in a way that works nice with Vue's reactive system
       for (const [key, value] of Object.entries(this.originalModelCopy)) {
