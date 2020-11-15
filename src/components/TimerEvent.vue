@@ -75,9 +75,10 @@
             style="max-width: 70px; margin-right:40px;"
             :class="{ 'md-invalid': !$v.minimumTimeRange.validTime }"
           >
-            <label for="minimum-executionTimeRange">Start</label>
+            <label for="minimumTimeRange">Start</label>
             <md-input
-              name="minimum-executionTimeRange"
+              name="minimumTimeRange"
+              v-mask="'##:##:##'"
               v-model="minimumTimeRange"
             />
 
@@ -93,9 +94,10 @@
             style="max-width: 70px;"
             :class="{ 'md-invalid': !$v.maximumTimeRange.validTime }"
           >
-            <label for="maximum-executionTimeRange">End</label>
+            <label for="maximumTimeRange">End</label>
             <md-input
-              name="maximum-executionTimeRange"
+              name="maximumTimeRange"
+              v-mask="'##:##:##'"
               v-model="maximumTimeRange"
             />
 
@@ -139,6 +141,7 @@ import {
 import { EventTimeTypeEnum } from "@/server/enums/events";
 import { getTimeInSeconds, getFormattedTime, validateFormattedTime } from "@/server/utils/TimeUtils";
 import SoundPicker from "./SoundPicker.vue";
+import { mask } from "vue-the-mask";
 import {
   required,
   integer,
@@ -151,6 +154,9 @@ export default Vue.extend({
   name: "TimerEvent",
   components: {
     SoundPicker
+  },
+  directives: {
+    mask
   },
   props: {
     model: {
