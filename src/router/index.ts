@@ -1,8 +1,8 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import App from "../App.vue";
-import Overlay from "../pages/Overlay.vue";
-import Settings from "../pages/Settings.vue";
+import Overlay from "../pages/Overlay/Overlay.vue";
+import SettingsPage from "../pages/SettingsPage.vue";
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
@@ -14,7 +14,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/",
     name: "Settings",
-    component: Settings
+    component: SettingsPage
   }
 ];
 

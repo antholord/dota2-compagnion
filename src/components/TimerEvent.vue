@@ -116,6 +116,12 @@
           @sound-file-name-changed="soundFileNameChanged"
         />
       </div>
+      <div class="md-layout-item">
+        <IconPicker
+          :icon-file-name="model.icon"
+          @icon-file-name-changed="iconFileNameChanged"
+        />
+      </div>
       <div
         class="md-layout-item"
         style="padding-top: 10px"
@@ -141,6 +147,7 @@ import {
 import { EventTimeTypeEnum } from "@/server/enums/events";
 import { getTimeInSeconds, getFormattedTime, validateFormattedTime } from "@/server/utils/TimeUtils";
 import SoundPicker from "./SoundPicker.vue";
+import IconPicker from "./IconPicker.vue";
 import { mask } from "vue-the-mask";
 import {
   required,
@@ -153,7 +160,8 @@ import {
 export default Vue.extend({
   name: "TimerEvent",
   components: {
-    SoundPicker
+    SoundPicker,
+    IconPicker
   },
   directives: {
     mask
@@ -240,6 +248,9 @@ export default Vue.extend({
     },
     soundFileNameChanged(value) {
       this.model.soundFileName = value;
+    },
+    iconFileNameChanged(value) {
+      this.model.icon = value;
     }
   },
   validations: {

@@ -1,5 +1,5 @@
 
-import { BrowserWindow } from "electron";
+import { BrowserWindow, screen } from "electron";
 import { GameWatcher } from "../service/game-watcher";
 
 let gameActiveHandler: (isActive: boolean) => void;
@@ -9,18 +9,19 @@ export default {
   createWindow(): BrowserWindow {
     // Create the browser window.
     if (overlay == null) {
+      const areaSize = screen.getPrimaryDisplay().workAreaSize;
       overlay = new BrowserWindow({
-        width: 350,
-        maxWidth: 350,
-        height: 200,
-        maxHeight: 200,
+        width: areaSize.width,
+        maxWidth: areaSize.width,
+        height: areaSize.height,
+        maxHeight: areaSize.height,
         maximizable: false,
         fullscreenable: false,
         skipTaskbar: true,
         show: false,
         frame: false, // debug
-        y: 290,
-        x: 845,
+        y: 0,
+        x: 0,
         transparent: true,
         movable: false,
         resizable: false,
@@ -34,6 +35,7 @@ export default {
       overlay.removeMenu();
       overlay.setAlwaysOnTop(true, "pop-up-menu");
       overlay.setIgnoreMouseEvents(true, { forward: true });
+
       GameWatcher.startWatch();
       gameActiveHandler = (isActive : boolean) => {
         if (!overlay) return;
@@ -41,7 +43,7 @@ export default {
           overlay.show();
           // GameWatcher.focusGame();
         } else {
-          overlay.hide();
+          // overlay.hide();
         }
       };
       GameWatcher.on("game-window-changed", gameActiveHandler);

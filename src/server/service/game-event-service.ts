@@ -17,6 +17,11 @@ const events: RegisteredEvent[] = [];
 let loop: NodeJS.Timeout;
 let window: BrowserWindow | null = null;
 
+function setGameTime(time) {
+  gameTime = time;
+  window?.webContents.send("game-time", gameTime);
+}
+
 function startGame() {
   loop = setInterval(executeEventLoop, 1000);
   executeEventLoop();
@@ -37,7 +42,7 @@ function executeEventLoop() {
       timedEvent.callbackFunction(timedEvent.event, EventTypeEnum.Notification);
     }
   });
-  gameTime++;
+  setGameTime(gameTime + 1);
 }
 
 function registerEvent(event: TimedEventModel, callback: (anEvent: TimedEventModel, eventType: EventTypeEnum) => any) {
@@ -83,7 +88,7 @@ function updateState(gameState: GameStateModel): number {
   if (!loop) startGame();
 
   if (gameState.map == null) {
-    gameTime = 0;
+    setGameTime(0);
     return gameTime;
   }
   const newGameTime: number = gameState.map.clock_time;
@@ -102,7 +107,7 @@ function updateState(gameState: GameStateModel): number {
       registeredEvent.dueTime = eventTime;
     });
 
-    gameTime = newGameTime;
+    setGameTime(newGameTime);
   }
   return gameTime;
 };

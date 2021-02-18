@@ -115,9 +115,8 @@ export function createHttpServer() {
     });
     req.on("end", () => {
       const state = JSON.parse(data as any) as GameStateModel;
-      console.log(state);
       const time = GameEventService.updateState(state);
-      overlay?.webContents.send("game-time", time);
+      // overlay?.webContents.send("game-time", time);
     });
   });
   server.listen(4000);

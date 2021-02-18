@@ -13,6 +13,7 @@ export interface TimedEventModel {
   name: string;
   eventTimeType: EventTimeTypeEnum;
   soundFileName: string;
+  icon: string;
 }
 
 export const DefaultTimedEvent = {

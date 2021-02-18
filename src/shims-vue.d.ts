@@ -9,5 +9,8 @@ declare module "*.vue" {
 declare module "vue/types/vue" {
   interface Vue {
     $electron: typeof Electron
+    $game: {
+      time: number;
+    }
   }
 }
