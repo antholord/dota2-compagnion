@@ -20,12 +20,8 @@
         </md-icon>
       </md-button>
     </div>
-    <div
-      class="md-layout"
-    >
-      <div
-        class="md-layout-item md-size-35 event-list"
-      >
+    <div class="md-layout">
+      <div class="md-layout-item md-size-35 event-list">
         <md-list
           style="padding:0px;"
           class="md-dense"

@@ -1,5 +1,5 @@
 <template>
-<div
+  <div
     class="md-layout volume-layout"
   >
     <div
@@ -66,7 +66,7 @@ export default Vue.extend({
       this.$emit("input", this.volume);
     },
     playSound(event: any) {
-      const audio = new Audio("sounds/bounty.wav");
+      const audio = new Audio("sounds/item/amulet.wav");
       audio.volume = this.volume;
       audio.play();
     }

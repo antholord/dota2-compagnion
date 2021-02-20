@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 
 import Vuelidate from "vuelidate";
+import router from "./router";
 // ts-ignore
 import VueMaterial from "vue-material";
 import "vue-material/dist/vue-material.min.css";
@@ -16,5 +17,6 @@ Vue.use(Vuelidate);
 Vue.use(VueElectron as any);
 Vue.use(VueMaterial);
 new Vue({
+  router,
   render: h => h(App)
 }).$mount("#app");
