@@ -43,7 +43,7 @@ export default {
           overlay.show();
           // GameWatcher.focusGame();
         } else {
-          // overlay.hide();
+          overlay.hide();
         }
       };
       GameWatcher.on("game-window-changed", gameActiveHandler);

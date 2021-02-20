@@ -1,9 +1,9 @@
-/* eslint-disable no-self-assign */
 <template>
   <div id="overlay-container">
     <UpcomingNotifications
       :notifications="upcomingNotifications"
       @upcoming-notification-expired="upcomingNotificationExpired"
+      @upcoming-notification-trigger="upcomingNotificationTrigger"
     />
     <ActiveNotifications
       :notifications="activeNotifications"
@@ -18,13 +18,16 @@ import { GameStateModel } from "@/server/model/game-state-model";
 import { TimedEventModel } from "@/server/model/timed-event-model";
 import ActiveNotifications from "@/pages/Overlay/ActiveNotifications.vue";
 import UpcomingNotifications from "@/pages/Overlay/UpcomingNotifications.vue";
+import { ISettings } from "../../settings";
 
-export interface UINotification {
+export type UINotification = {
   id : number
   message?: string,
   icon: string,
+  soundFileName: string,
   expireAt: number,
-  createdAt: number
+  createdAt: number,
+  wasTriggered: boolean
 }
 
 export const gameInfo = Vue.observable({ time: 0 });
@@ -37,20 +40,23 @@ export default Vue.extend({
   },
   data: function() {
     return {
+      settings: {} as ISettings,
       upcomingNotifications: [] as UINotification[],
       activeNotifications: [] as UINotification[]
     };
   },
   created() {
+    this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("get-settings"));
     this.$electron.ipcRenderer.on("game-event-notification", (event, data: TimedEventModel) => {
+      console.log(data);
       this.upcomingNotifications.push({
         id: Date.now() + Math.random(),
         icon: data.icon,
+        soundFileName: data.soundFileName,
         expireAt: gameInfo.time + data.duration,
-        createdAt: gameInfo.time
+        createdAt: gameInfo.time,
+        wasTriggered: false
       });
-    });
-    this.$electron.ipcRenderer.on("game-event-trigger", (event, data: TimedEventModel) => {
     });
 
     this.$electron.ipcRenderer.on("game-time", (event, data) => {
@@ -62,7 +68,6 @@ export default Vue.extend({
       const index = this.activeNotifications.findIndex(n => n.id === notification.id);
       if (index) {
         this.$delete(this.activeNotifications, index);
-        // this.activeNotifications.splice(index, 1);
       }
     },
     upcomingNotificationExpired(notification: UINotification) {
@@ -71,11 +76,19 @@ export default Vue.extend({
       if (index > -1) {
         this.$delete(this.upcomingNotifications, index);
       }
+    },
+    upcomingNotificationTrigger(notification: UINotification) {
+      this.triggerEvent(notification);
+      notification.wasTriggered = true;
+    },
+    triggerEvent(notification: UINotification) {
+      const audio = new Audio(`sounds/${notification.soundFileName}`);
+      audio.volume = this.settings.volume ?? 0.5;
+      audio.play();
     }
   },
   beforeDestroy() {
     this.$electron.ipcRenderer.removeAllListeners("game-event-notification");
-    this.$electron.ipcRenderer.removeAllListeners("game-event-trigger");
     this.$electron.ipcRenderer.removeAllListeners("game-time");
   }
 });

@@ -5,10 +5,9 @@
         v-for="(n) in notifications"
         :key="n.id"
       >
-        {{ gameTime }}
         <progress
           :value="gameTime - n.createdAt"
-          :max="n.expireAt - gameTime"
+          :max="n.expireAt - n.createdAt"
         ></progress>
         <img :src="'icons/' + n.icon">
       </div>
@@ -18,9 +17,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { GameStateModel } from "@/server/model/game-state-model";
-import { TimedEventModel } from "@/server/model/timed-event-model";
-import Settings from "@/components/Settings.vue";
 import { gameInfo, UINotification } from "./Overlay.vue";
 
 export default Vue.extend({
@@ -31,7 +27,8 @@ export default Vue.extend({
     // eslint-disable-next-line vue/require-default-prop
     notifications: {
       type: Array as () => UINotification[]
-    }
+    },
+    expireDecay: { type: Number, default: 3 }
   },
   computed: {
     gameTime(): number {
@@ -41,7 +38,11 @@ export default Vue.extend({
   watch: {
     gameTime: function(newTime) {
       this.notifications.forEach(n => {
-        if (n.expireAt <= newTime) {
+        if (n.wasTriggered === false && n.expireAt <= newTime) {
+          this.$emit("upcoming-notification-trigger", n);
+          n.wasTriggered = true;
+        }
+        if (n.expireAt + this.expireDecay <= newTime) {
           this.$emit("upcoming-notification-expired", n);
           console.log("notification ended");
         }
