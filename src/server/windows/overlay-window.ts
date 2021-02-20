@@ -43,6 +43,7 @@ export default {
           overlay.show();
           // GameWatcher.focusGame();
         } else {
+          // DEBUG
           overlay.hide();
         }
       };

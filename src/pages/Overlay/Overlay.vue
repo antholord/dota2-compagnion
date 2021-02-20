@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { GameStateModel } from "@/server/model/game-state-model";
 import { TimedEventModel } from "@/server/model/timed-event-model";
 import ActiveNotifications from "@/pages/Overlay/ActiveNotifications.vue";
 import UpcomingNotifications from "@/pages/Overlay/UpcomingNotifications.vue";
@@ -48,7 +47,6 @@ export default Vue.extend({
   created() {
     this.settings = Object.assign({}, this.$electron.ipcRenderer.sendSync("get-settings"));
     this.$electron.ipcRenderer.on("game-event-notification", (event, data: TimedEventModel) => {
-      console.log(data);
       this.upcomingNotifications.push({
         id: Date.now() + Math.random(),
         icon: data.icon,
@@ -72,7 +70,6 @@ export default Vue.extend({
     },
     upcomingNotificationExpired(notification: UINotification) {
       const index = this.upcomingNotifications.findIndex(n => n.id === notification.id);
-      console.log(index);
       if (index > -1) {
         this.$delete(this.upcomingNotifications, index);
       }
@@ -99,6 +96,7 @@ export default Vue.extend({
     width:100%;
     height:30%;
   }
+
   #side-notifications {
     float:right;
   }

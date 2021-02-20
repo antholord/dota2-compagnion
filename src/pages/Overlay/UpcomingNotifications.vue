@@ -4,12 +4,16 @@
       <div
         v-for="(n) in notifications"
         :key="n.id"
+        class="notification"
       >
-        <progress
-          :value="gameTime - n.createdAt"
-          :max="n.expireAt - n.createdAt"
-        ></progress>
-        <img :src="'icons/' + n.icon">
+        <div class="progress-container">
+          <span>{{ getRemainingTime(n) }}</span>
+          <progress
+            :value="gameTime - n.createdAt"
+            :max="n.expireAt - n.createdAt"
+          ></progress>
+          <img :src="'icons/' + n.icon">
+        </div>
       </div>
     </div>
   </div>
@@ -35,6 +39,11 @@ export default Vue.extend({
       return gameInfo.time;
     }
   },
+  methods: {
+    getRemainingTime(notification: UINotification): number {
+      return Math.max(notification.expireAt - this.gameTime, 0);
+    }
+  },
   watch: {
     gameTime: function(newTime) {
       this.notifications.forEach(n => {
@@ -44,7 +53,6 @@ export default Vue.extend({
         }
         if (n.expireAt + this.expireDecay <= newTime) {
           this.$emit("upcoming-notification-expired", n);
-          console.log("notification ended");
         }
       });
     }
@@ -57,28 +65,43 @@ export default Vue.extend({
     position: absolute;
     top: 10vh;
     right: 1vh;
+    overflow: none;
+  }
+  .notification {
+    padding-bottom:5px;
+  }
+  .progress-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .progress-container > span {
+    text-align: center;
+    position: relative;
+    right:-57%;
+    font-weight: bold;
   }
   img {
     height:40px !important;
   }
-   progress {
-     -webkit-appearance: none;
-   appearance: none;
+  progress {
+    -webkit-appearance: none;
+    appearance: none;
     width:100px;
     height:20px;
     padding-right:5px;
   }
   progress[value]::-webkit-progress-bar {
-  background-color: #eee;
-  border-radius: 2px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
-}
-@-webkit-keyframes animate-stripes {
-   100% { background-position: -100px 0px; }
-}
+    background-color: #eee;
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+  }
+  @-webkit-keyframes animate-stripes {
+    100% { background-position: -100px 0px; }
+  }
 
-@keyframes animate-stripes {
-   100% { background-position: -100px 0px; }
+  @keyframes animate-stripes {
+    100% { background-position: -100px 0px; }
 }
 
 </style>
