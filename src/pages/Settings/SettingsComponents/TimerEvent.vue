@@ -117,21 +117,25 @@
         />
       </div>
       <div class="md-layout-item">
-        <IconPicker
-          :icon-file-name="model.icon"
-          @icon-file-name-changed="iconFileNameChanged"
-        />
-      </div>
-      <div
-        class="md-layout-item"
-        style="padding-top: 10px"
-      >
-        <md-button
-          class="md-accent md-raised"
-          @click="$emit('delete-event', model)"
-        >
-          DELETE
-        </md-button>
+        <div class="md-layout md-gutter md-alignment-center-center">
+          <div class="md-layout-item">
+            <IconPicker
+              :icon-file-name="model.icon"
+              @icon-file-name-changed="iconFileNameChanged"
+            />
+          </div>
+          <div
+            class="md-layout-item"
+            style="display:flex;align-self:flex-end;justify-content:flex-end;"
+          >
+            <md-button
+              class="md-accent md-raised"
+              @click="$emit('delete-event', model)"
+            >
+              DELETE
+            </md-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

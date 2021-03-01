@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import App from "../App.vue";
 import Overlay from "../pages/Overlay/Overlay.vue";
-import SettingsPage from "../pages/SettingsPage.vue";
+import SettingsPage from "../pages/Settings/SettingsPage.vue";
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [

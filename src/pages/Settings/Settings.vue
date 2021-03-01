@@ -4,6 +4,7 @@
   >
     <h1>Settings</h1>
     <VolumeSlider v-model.number="settings.volume" />
+    <ExecPath v-model="settings.gamePath" />
     <div
       class="md-headline event-title"
     >
@@ -79,20 +80,21 @@
 
 <script lang="ts">
 import Vue from "vue";
-import TimerEvent from "./TimerEvent.vue";
-import VolumeSlider from "./VolumeSlider.vue";
-import ValidationMixin from "../mixins/ValidationMixin";
+import TimerEvent from "./SettingsComponents/TimerEvent.vue";
+import VolumeSlider from "./SettingsComponents/VolumeSlider.vue";
 import mixins from "vue-typed-mixins";
 import { ISettings } from "@/settings";
 import { DefaultTimedEvent, TimedEventModel } from "@/server/model/timed-event-model";
-import { EventTimeTypeEnum } from "@/server/enums/events";
-import { required, between, integer, minLength, maxLength } from "vuelidate/lib/validators";
+import { required, between } from "vuelidate/lib/validators";
+import ValidationMixin from "../../mixins/ValidationMixin";
+import ExecPath from "./SettingsComponents/ExecPath.vue";
 
 export default mixins(ValidationMixin).extend({
   name: "Settings",
   components: {
     TimerEvent,
-    VolumeSlider
+    VolumeSlider,
+    ExecPath
   },
   data() {
     return {

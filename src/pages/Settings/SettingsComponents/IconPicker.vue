@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="md-layout-item">
     <label for="select"><h4>Icon</h4></label>
     <Multiselect
       name="select"
@@ -40,8 +40,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { DefaultTimedEvent } from "@/server/model/timed-event-model";
-import { EventTimeTypeEnum } from "@/server/enums/events";
 import Multiselect from "vue-multiselect";
 
 const icons = require
@@ -96,7 +94,7 @@ export default Vue.extend({
 
   <style>
   img {
-    height:70px;
+    height:50px;
   }
   .multiselect__option {
     padding:4px;

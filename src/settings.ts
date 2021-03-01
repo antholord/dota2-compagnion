@@ -4,7 +4,8 @@ import { TimedEventModel } from "./server/model/timed-event-model";
 export interface ISettings {
   volume: number;
   customEvents: TimedEventModel[],
-  gameWindowName: string
+  gameWindowName: string,
+  gamePath: string
 }
 
 export const settings: ISettings = {
@@ -14,5 +15,6 @@ export const settings: ISettings = {
     { enabled: true, executionTimeRange: { startTime: 601, endTime: 0 }, duration: 600, notificationDuration: 45, name: "Shrines exp event", eventTimeType: EventTimeTypeEnum.Relative, soundFileName: "object/shrine/armorboost.wav", icon: "outpost.png" },
     { enabled: true, executionTimeRange: { startTime: 0, endTime: 0 }, duration: 120, notificationDuration: 15, name: "Middle runes", eventTimeType: EventTimeTypeEnum.Relative, soundFileName: "combat/explosion/explosionlarge2.wav", icon: "dd_rune.png" }
   ],
-  gameWindowName: "Dota 2"
+  gameWindowName: "Dota 2",
+  gamePath: "C:\\Program Files (x86)\\Steam\\steamapps\\common\\dota 2 beta"
 };

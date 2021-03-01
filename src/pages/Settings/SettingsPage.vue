@@ -10,10 +10,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { GameStateModel } from "@/server/model/game-state-model";
-import { TimedEventModel } from "@/server/model/timed-event-model";
-import Settings from "@/components/Settings.vue";
-
+import Settings from "./Settings.vue";
 export default Vue.extend({
   name: "App",
   components: {

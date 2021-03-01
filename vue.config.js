@@ -17,7 +17,8 @@ module.exports = {
           target: [
             "nsis",
             "portable"
-          ]
+          ],
+          requestedExecutionLevel: "requireAdministrator"
         },
         linux: {
           target: [
