@@ -16,6 +16,7 @@ class GameWatcherClass extends EventEmitter {
       // initial check if window is opened, so we dont need alt tab to make it appear
       const currentWindow = windowManager.getActiveWindow();
       if (currentWindow?.getTitle() === settings.gameWindowName) {
+        console.log("game window changed");
         this.emit("game-window-changed", true);
       }
       this.loop();
@@ -29,7 +30,8 @@ class GameWatcherClass extends EventEmitter {
     if (!currentWindow) return;
 
     if (!lastWindow) lastWindow = currentWindow;
-
+    // console.log("lastWindow : " + lastWindow.getTitle());
+    // console.log("currentWindow :" + currentWindow.getTitle());
     if (currentWindow.id !== lastWindow.id) {
       if (currentWindow.getTitle() === settings.gameWindowName) {
         this.emit("game-window-changed", true);

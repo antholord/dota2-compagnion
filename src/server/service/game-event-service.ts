@@ -1,4 +1,4 @@
-import { ISettings } from "@/settings.ts";
+import { ISettings } from "@/settings";
 import { BrowserWindow, ipcMain } from "electron";
 import { GameStateModel } from "@/server/model/game-state-model";
 import { TimedEventModel } from "@/server/model/timed-event-model";

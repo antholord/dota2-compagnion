@@ -1,5 +1,5 @@
 import Store from "electron-store";
-import { settings, ISettings } from "@/settings.ts";
+import { settings, ISettings } from "@/settings";
 import { ipcMain } from "electron";
 
 const store = new Store<ISettings>({

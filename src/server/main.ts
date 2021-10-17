@@ -8,7 +8,7 @@ import ElectronStore, { setupConfigEvents } from "@/server/electron-store";
 import OverlayWindow from "./windows/overlay-window";
 import { setupGameConfigEvents } from "./service/game-config-service";
 
-const isDevelopment = process.env.NODE_ENV !== "production";
+export const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -128,6 +128,8 @@ export function createHttpServer() {
       data.push(chunk);
     });
     req.on("end", () => {
+      console.log("got update");
+      // console.log(data);
       const state = JSON.parse(data as any) as GameStateModel;
       const time = GameEventService.updateState(state);
       // overlay?.webContents.send("game-time", time);

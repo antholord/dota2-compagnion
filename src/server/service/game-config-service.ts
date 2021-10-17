@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 
 declare const __static: string;
+const gsiFileName = "gamestate_integration_dota2_timers.cfg";
 export function setupGameConfigEvents(): void {
   ipcMain.on("validate-game-config", (e, gamePath: string) => {
     try {
@@ -21,7 +22,7 @@ export function setupGameConfigEvents(): void {
       }
 
       const fullPathToConfigFolder = path.join(cfgPath, "gamestate_integration");
-      const fullPathToFile = path.join(fullPathToConfigFolder, "gsi_dota2_timers.cfg");
+      const fullPathToFile = path.join(fullPathToConfigFolder, gsiFileName);
 
       if (fs.existsSync(fullPathToFile)) {
         // config is already setup properly
@@ -33,8 +34,8 @@ export function setupGameConfigEvents(): void {
         fs.mkdirSync(fullPathToConfigFolder);
       }
       fs.copyFileSync(localProjectConfigPath, fullPathToConfigFolder);
-      if (fs.existsSync(path.join(fullPathToConfigFolder, "gsi_dota2_timers.cfg"))) {
-        e.returnValue = path.join(fullPathToConfigFolder, "gsi_dota2_timers.cfg");
+      if (fs.existsSync(path.join(fullPathToConfigFolder, gsiFileName))) {
+        e.returnValue = path.join(fullPathToConfigFolder, gsiFileName);
       }
     } catch (e) {
       console.error(e);
@@ -43,7 +44,7 @@ export function setupGameConfigEvents(): void {
 }
 
 function getProjectConfig(): string | null {
-  const projectConfigPath = path.join(__static, "gamestate_integration/gsi_dota2_timers.cfg");
+  const projectConfigPath = path.join(__static, `gamestate_integration/${gsiFileName}`);
   return fs.existsSync(projectConfigPath) ? projectConfigPath : null;
 }
 

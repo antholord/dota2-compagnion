@@ -1,1 +1,1 @@
-import "@/server/main.ts";
+import "@/server/main";

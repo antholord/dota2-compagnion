@@ -1,9 +1,27 @@
 
 import { BrowserWindow, screen } from "electron";
+import { isDevelopment } from "../main";
 import { GameWatcher } from "../service/game-watcher";
 
 let gameActiveHandler: (isActive: boolean) => void;
 let overlay : BrowserWindow | null;
+
+const createGameActiveHandler = (overlay: BrowserWindow) => {
+  if (isDevelopment) {
+    return () => { if (!overlay?.isVisible) overlay?.show(); };
+  } else {
+    return (isActive : boolean) => {
+      if (!overlay) return;
+      if (isActive) {
+        overlay.show();
+        // GameWatcher.focusGame();
+      } else {
+        // DEBUG
+        overlay.hide();
+      }
+    };
+  }
+};
 
 export default {
   createWindow(): BrowserWindow {
@@ -18,7 +36,7 @@ export default {
         maximizable: false,
         fullscreenable: false,
         skipTaskbar: true,
-        show: false,
+        show: isDevelopment,
         frame: false, // debug
         y: 0,
         x: 0,
@@ -37,16 +55,7 @@ export default {
       overlay.setIgnoreMouseEvents(true, { forward: true });
 
       GameWatcher.startWatch();
-      gameActiveHandler = (isActive : boolean) => {
-        if (!overlay) return;
-        if (isActive) {
-          overlay.show();
-          // GameWatcher.focusGame();
-        } else {
-          // DEBUG
-          overlay.hide();
-        }
-      };
+      gameActiveHandler = createGameActiveHandler(overlay);
       GameWatcher.on("game-window-changed", gameActiveHandler);
 
       if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -55,7 +64,6 @@ export default {
         overlay.loadURL(process.env.WEBPACK_DEV_SERVER_URL + "#/overlay");
         // if (!process.env.IS_TEST) win.webContents.openDevTools();
       } else {
-        console.log("app://./#/overlay");
         // Load the index.html when not in development
         overlay.loadURL("app://./#/overlay");
       }
@@ -70,6 +78,7 @@ export default {
     }
 
     overlay!.once("closed", () => {
+      console.log("once closed");
       overlay = null;
       GameWatcher.off("game-window-changed", gameActiveHandler);
     });

@@ -1,19 +1,21 @@
 import { EventTimeTypeEnum } from "@/server/enums/events";
 import { between, maxLength, minLength, required, integer } from "vuelidate/lib/validators";
 
-export interface TimeRange {
-  startTime: number,
-  endTime: number
+export type TimeRange = {
+  startTime: number;
+  endTime: number;
 }
-export interface TimedEventModel {
-  enabled: boolean,
+
+export type TimedEventModel = {
+  enabled: boolean;
   duration: number;
+  // preTimerDuration: number;
   executionTimeRange: TimeRange;
   notificationDuration: number;
   name: string;
   eventTimeType: EventTimeTypeEnum;
-  soundFileName: string;
-  icon: string;
+  soundFileName?: string;
+  icon?: string;
 }
 
 export const DefaultTimedEvent = {
@@ -26,5 +28,6 @@ export const DefaultTimedEvent = {
   eventTimeType: EventTimeTypeEnum.Relative,
   duration: 60,
   notificationDuration: 10,
-  soundFileName: "/sounds/bounty.wav"
+  soundFileName: "/item/gold.wav",
+  icon: "greevils_greed.png"
 } as TimedEventModel;

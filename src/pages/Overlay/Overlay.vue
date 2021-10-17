@@ -1,5 +1,6 @@
 <template>
   <div id="overlay-container">
+    toto
     <UpcomingNotifications
       :notifications="upcomingNotifications"
       @upcoming-notification-expired="upcomingNotificationExpired"
@@ -22,8 +23,8 @@ import { ISettings } from "../../settings";
 export type UINotification = {
   id : number
   message?: string,
-  icon: string,
-  soundFileName: string,
+  icon?: string,
+  soundFileName?: string,
   expireAt: number,
   createdAt: number,
   wasTriggered: boolean
@@ -57,8 +58,9 @@ export default Vue.extend({
       });
     });
 
-    this.$electron.ipcRenderer.on("game-time", (event, data) => {
-      gameInfo.time = data;
+    this.$electron.ipcRenderer.on("game-time", (event, time) => {
+      gameInfo.time = time;
+      console.log(time);
     });
   },
   methods: {
